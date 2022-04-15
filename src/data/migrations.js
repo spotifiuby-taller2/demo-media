@@ -51,7 +51,7 @@ async function runMigrations() {
         .catch(error => console.log(error.toString()));
 
     await queryInterface.addColumn('song',
-        'gender', {
+        'genre', {
             type: Sequelize.STRING(constants.MAX_STR_LEN),
             allowNull: true,
             unique: false,

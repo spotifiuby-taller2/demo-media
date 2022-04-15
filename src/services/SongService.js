@@ -5,7 +5,7 @@ const Song = require("../data/Song");
 async function newSong(req, res) {
     Logger.info("Creando nueva cancion.");
 
-    const {title, description, artist, author, susbcription, gender, link} = req.body;
+    const {title, description, artist, author, susbcription, genre, link} = req.body;
 
     if (utils.areAnyUndefined([title, artist, link])) {
         Logger.error(`Error: title, artist y link son obligatorios.`);
@@ -20,7 +20,7 @@ async function newSong(req, res) {
             artist: artist,
             author: author,
             subscription: susbcription,
-            gender: gender,
+            genre: genre,
             link: link
         }
     ).catch(error => {
@@ -43,7 +43,7 @@ async function getSongs(req, res) {
     Logger.info("Obteniendo todas las canciones")
 
     const songs = await Song.findAll(
-        {attributes: ['id', 'title', 'description', 'artist', 'author', 'subscription', 'gender', 'link']}
+        {attributes: ['id', 'title', 'description', 'artist', 'author', 'subscription', 'genre', 'link']}
     ).catch(error => {
         Logger.error(`No se pudieron obtener las canciones de la base de datos: ${error.toString()}`);
         utils.setErrorResponse("No se pudieron obtener las canciones", 500, res);

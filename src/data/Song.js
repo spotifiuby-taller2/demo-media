@@ -39,7 +39,7 @@ const Song = database.define('song',
             defaultValue: 'FREE'
         },
 
-        gender: {
+        genre: {
             type: Sequelize.STRING(constants.MAX_STR_LEN),
             allowNull: true,
             unique: false,
@@ -61,7 +61,7 @@ const Song = database.define('song',
                 fields: ['artist']
             },
             {
-                fields: ['gender']
+                fields: ['genre']
             }]
     });
 
