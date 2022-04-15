@@ -1,7 +1,6 @@
 version: "3"
 
 volumes:
-  node_modules:
   postgres_data:
 
 networks:
@@ -9,9 +8,8 @@ networks:
     driver: bridge
 
 services:
-  db_psql:
+  db_media:
     image: postgres:13
-    container_name: ${DB_CONTAINER_NAME}
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -23,9 +21,10 @@ services:
     ports:
       - "5432:5432"
 
-  ws_node:
-    build: .
-    container_name: ${NODE_CONTAINER_NAME}
+  media_service:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
     ports:
       - ${NODE_LOCAL_PORT}:${NODE_DOCKER_PORT}
     depends_on:
