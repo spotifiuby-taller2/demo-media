@@ -1,6 +1,6 @@
 const utils = require("../others/utils");
 const Logger = require("./Logger");
-const Song = require("../data/Song");
+const {Song} = require("../data/Media");
 
 async function newSong(req, res) {
     Logger.info("Creando nueva cancion.");
@@ -40,10 +40,17 @@ async function newSong(req, res) {
 }
 
 async function getSongs(req, res) {
-    Logger.info("Obteniendo todas las canciones")
+    Logger.info("Obteniendo las canciones")
 
-    const songs = await Song.findAll(
-        {attributes: ['id', 'title', 'description', 'artist', 'author', 'subscription', 'genre', 'link']}
+    const {title, artist,genre} = req.query;
+
+    var where = title !== undefined ? {title} : {};
+    where = artist !== undefined ? {title} : {};
+    where = genre !== undefined ? {title} : {};
+
+    const songs = await Song.findAll({
+        where : {},
+        attributes: ['id', 'title', 'description', 'artist', 'author', 'subscription', 'genre', 'link']}
     ).catch(error => {
         Logger.error(`No se pudieron obtener las canciones de la base de datos: ${error.toString()}`);
         utils.setErrorResponse("No se pudieron obtener las canciones", 500, res);
@@ -59,4 +66,9 @@ async function getSongs(req, res) {
     utils.setBodyResponse(songs, 200, res);
 }
 
-module.exports = {newSong, getSongs};
+async function getSong(req, res) {
+    Logger.info("Get song by:" + req.params.title)
+
+}
+
+module.exports = {newSong, getSongs, getSong};

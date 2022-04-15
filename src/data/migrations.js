@@ -68,6 +68,7 @@ async function runMigrations() {
         .catch(error => console.log(error.toString()));
 }
 
+//TODO
 module.exports = {
     runMigrations
 }

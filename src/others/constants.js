@@ -7,6 +7,7 @@ const MAX_STR_LEN = 254;
 const FIREBASE_MAX_LEN = 36;
 const BCRYPT_LEN = 60;
 const SHA_LEN = 64;
+const MAX_STR_FIREBASE_LINK = 1000;
 
 const MIN_STR_LEN = 2;
 const MIN_PASS_LEN = 10;
@@ -32,7 +33,8 @@ const USERS_HOST = process.env.USERS_HOST;
 /* Frontend paths */
 
 /* Backends paths */
-const SONG_URL = "/song"
+const SONG_URL = "/songs"
+const ALBUM_URL = "/albums"
 
 /* ====== Production vs Development config ====== */
 const isDevelopment = process.env.PRODUCTION === undefined;
@@ -139,10 +141,12 @@ module.exports = {
     TIMEZONE,
     SYMBOL_MAX_LEN,
     TIMESTAMP_MAX_LEN,
+    MAX_STR_FIREBASE_LINK,
     RESET_DATABASE,
     isDevelopment,
     LOG_LEVEL,
     AUTH_FRONT,
     firebaseConfig,
-    SONG_URL
+    SONG_URL,
+    ALBUM_URL
 }

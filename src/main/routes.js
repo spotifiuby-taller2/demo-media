@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const constants = require('../others/constants');
 const SongService = require('../services/SongService');
+const AlbumService = require('../services/AlbumService');
 const Logger = require("../services/Logger");
 
 /**
@@ -21,19 +22,29 @@ const Logger = require("../services/Logger");
  *          "500":
  *              description: "Internal Server Error: Cannot response the request"
  */
-router.get('/health-check', (req, res) => {
+router.get('/health-check', async (req, res) => {
     Logger.request("Health-check.");
     res.send('OK');
 });
 
-router.post(constants.SONG_URL, (req, res) => {
+router.post(constants.SONG_URL, async (req, res) => {
     Logger.request("Crear nueva cancion.");
-    SongService.newSong(req, res);
+    await SongService.newSong(req, res);
 });
 
-router.get(constants.SONG_URL, (req, res) => {
-    Logger.request("Obtener todas las canciones.");
-    SongService.getSongs(req, res);
+router.get(constants.SONG_URL, async (req, res) => {
+    Logger.request("Obtener canciones.");
+    await SongService.getSongs(req, res);
+});
+
+router.get(constants.SONG_URL + "/:id", async (req, res) => {
+    Logger.request("Obtener cancion.");
+    await SongService.getSong(req, res);
+});
+
+router.post(constants.ALBUM_URL, async (req, res) => {
+    Logger.request("Crear nuevo album");
+    await AlbumService.newAlbum(req, res);
 });
 
 module.exports = router;
