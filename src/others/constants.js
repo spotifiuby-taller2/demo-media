@@ -34,20 +34,6 @@ const USERS_HOST = process.env.USERS_HOST;
 /* Backends paths */
 const SONG_URL = "/song"
 
-/* ====== Docker vs Development config ====== */
-let nodePort;
-
-if (process.env
-    .PORT === undefined) {
-    nodePort = process.env
-        .NODE_DOCKER_PORT;
-} else {
-    // Heroku
-    nodePort = process.env
-        .PORT;
-}
-
-
 /* ====== Production vs Development config ====== */
 const isDevelopment = process.env.PRODUCTION === undefined;
 let databaseUrl;
@@ -66,7 +52,7 @@ if (isDevelopment) {
     if (process.env.DATABASE_URL === undefined) {
         DB_USER = process.env.POSTGRES_USER;
         DB_PASSWORD = process.env.POSTGRES_PASSWORD;
-        DB_HOST = process.env.DB_CONTAINER_NAME;
+        DB_HOST = process.env.DB_HOST;
         DB_PORT = process.env.DB_PORT;
         POSTGRES_DB = process.env.POSTGRES_DB;
 
@@ -76,6 +62,7 @@ if (isDevelopment) {
             .concat(`@${DB_HOST}`)
             .concat(`:${DB_PORT}`)
             .concat(`/${POSTGRES_DB}`);
+        console.log(databaseUrl)
     } else {
         databaseUrl = process.env.DATABASE_URL;
     }
@@ -140,7 +127,7 @@ module.exports = {
     SHA_LEN,
     USERS_HOST,
     JSON_HEADER,
-    nodePort,
+    nodePort: process.env.PORT,
     databaseUrl,
     BACKOFFICE_HOST,
     MAX_STR_LEN,
