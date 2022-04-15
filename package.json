@@ -39,10 +39,12 @@
     "ws": "7.5.2"
   },
   "eslintConfig": {
-    "extends": [
-      "node",
-      "node/mocha"
-    ]
+    "parserOptions": {
+      "ecmaVersion": 2017
+    },
+    "env": {
+      "es6": true
+    }
   },
   "devDependencies": {
     "eslint": "7.11.0",
