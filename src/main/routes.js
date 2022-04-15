@@ -1,5 +1,8 @@
 const express = require('express')
 const router = express.Router()
+const constants = require('../others/constants');
+const SongService = require('../services/SongService');
+const Logger = require("../services/Logger");
 
 /**
  * @swagger
@@ -18,8 +21,19 @@ const router = express.Router()
  *          "500":
  *              description: "Internal Server Error: Cannot response the request"
  */
-router.get('/health-check', (req, res) =>
-    res.send('OK')
-);
+router.get('/health-check', (req, res) => {
+    Logger.request("Health-check.");
+    res.send('OK');
+});
+
+router.post(constants.SONG_URL, (req, res) => {
+    Logger.request("Crear nueva cancion.");
+    SongService.newSong(req, res);
+});
+
+router.get(constants.SONG_URL, (req, res) => {
+    Logger.request("Obtener todas las canciones.");
+    SongService.getSongs(req, res);
+});
 
 module.exports = router;

@@ -32,7 +32,7 @@ const USERS_HOST = process.env.USERS_HOST;
 /* Frontend paths */
 
 /* Backends paths */
-
+const SONG_URL = "/song"
 
 /* ====== Docker vs Development config ====== */
 let nodePort;
@@ -156,5 +156,6 @@ module.exports = {
     isDevelopment,
     LOG_LEVEL,
     AUTH_FRONT,
-    firebaseConfig
+    firebaseConfig,
+    SONG_URL
 }
