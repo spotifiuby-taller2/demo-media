@@ -53,4 +53,9 @@ router.post(constants.PLAYLIST_URL, async (req, res) => {
   await PlaylistService.newPlaylist(req, res);
 });
 
+router.get(`${constants.PLAYLIST_URL}/:id`, async (req, res) => {
+  Logger.request('Obtener playlist')
+  await PlaylistService.getPlaylist(req, res);
+})
+
 module.exports = router;
