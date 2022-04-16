@@ -29,6 +29,6 @@ const database = new Sequelize(constants.DATABASE_URL, {
       rejectUnauthorized: false
     } : false
   },
-} );
+});
 
 module.exports = database;
