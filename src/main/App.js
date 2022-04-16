@@ -31,8 +31,8 @@ class App {
         });
 
         this.app
-            .listen(constants.nodePort, () => {
-                console.log(`Listening on port ${constants.nodePort}`);
+            .listen(constants.NODE_PORT, () => {
+                console.log(`Listening on port ${constants.NODE_PORT}`);
             });
     }
 
