@@ -138,4 +138,58 @@ const AlbumSong = database.define('album_song', {
 Album.belongsToMany(Song, {through: AlbumSong});
 Song.belongsToMany(Album, {through: AlbumSong});
 
+const Playlist = database.define('playlist',
+  {
+    title: {
+      type: Sequelize.STRING(constants.MAX_STR_LEN),
+      allowNull: false,
+      validate: {notEmpty: true},
+      unique: false
+    },
+
+    description: {
+      type: Sequelize.STRING(constants.MAX_STR_LEN),
+      allowNull: true,
+      unique: false,
+      defaultValue: ''
+    },
+
+    owner: {
+      type: Sequelize.STRING(constants.FIREBASE_MAX_LEN),
+      allowNull: false,
+      validate: {notEmpty: true},
+      unique: false
+    },
+  },
+  {
+    indexes: [
+      {
+        fields: ['title']
+      },
+      {
+        fields: ['owner']
+      },
+    ]
+  });
+
+const AlbumPlaylist = database.define('album_playlist', {
+  playlistId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: Playlist,
+      key: 'id'
+    }
+  },
+  songId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: Song,
+      key: 'id'
+    }
+  }
+});
+
+Playlist.belongsToMany(Song, {through: AlbumPlaylist});
+Song.belongsToMany(Playlist, {through: AlbumPlaylist});
+
 module.exports = {Song, Album};
