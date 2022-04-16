@@ -47,4 +47,9 @@ router.post(constants.ALBUM_URL, async (req, res) => {
     await AlbumService.newAlbum(req, res);
 });
 
+router.post(constants.PLAYLIST_URL, async (req, res) => {
+    Logger.request("Crear nueva playlist");
+    await AlbumService.newAlbum(req, res);
+});
+
 module.exports = router;
