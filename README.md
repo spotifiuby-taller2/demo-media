@@ -1,6 +1,6 @@
 # users
 
-[![Coverage Status](https://coveralls.io/repos/github/edjeordjian/demo-users/badge.svg?branch=develop&t=8RwVJZ)](https://coveralls.io/github/edjeordjian/demo-users?branch=develop) 
+[![Coverage Status](https://coveralls.io/repos/github/spotifiuby-taller2/demo-media/badge.svg?branch=main&t=2P4ONd)](https://coveralls.io/github/spotifiuby-taller2/demo-media?branch=main)
 
 ### Instalación y configuración
 
