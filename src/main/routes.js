@@ -3,6 +3,7 @@ const router = express.Router()
 const constants = require('../others/constants');
 const SongService = require('../services/SongService');
 const AlbumService = require('../services/AlbumService');
+const PlaylistService = require('../services/PlaylistService');
 const Logger = require("../services/Logger");
 
 /**
@@ -49,7 +50,7 @@ router.post(constants.ALBUM_URL, async (req, res) => {
 
 router.post(constants.PLAYLIST_URL, async (req, res) => {
     Logger.request("Crear nueva playlist");
-    await AlbumService.newAlbum(req, res);
+    await PlaylistService.newPlaylist(req, res);
 });
 
 module.exports = router;

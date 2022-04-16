@@ -10,6 +10,10 @@ function setErrorResponse(error, status, res) {
   setBodyResponse(responseBody, status, res);
 }
 
+const newError = (status, message) => {
+  return {status: status, body: {error: message}};
+}
+
 function getDate() {
   return new Date().toISOString()
     .substr(0, 10);
@@ -26,4 +30,5 @@ module.exports = {
   setBodyResponse,
   getDate,
   areAnyUndefined,
+  newError,
 }

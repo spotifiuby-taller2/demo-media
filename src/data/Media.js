@@ -192,4 +192,4 @@ const AlbumPlaylist = database.define('album_playlist', {
 Playlist.belongsToMany(Song, {through: AlbumPlaylist});
 Song.belongsToMany(Playlist, {through: AlbumPlaylist});
 
-module.exports = {Song, Album};
+module.exports = {Song, Album, Playlist};
