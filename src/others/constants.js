@@ -45,13 +45,12 @@ if (isDevelopment) {
     DB_PORT = process.env.DB_PORT;
     POSTGRES_DB = process.env.POSTGRES_DB;
 
-    databaseUrl = `${process.env.DB}`
+    databaseUrl = `${process.env.DB || 'postgres'}`
       .concat(`://${DB_USER}`)
       .concat(`:${DB_PASSWORD}`)
       .concat(`@${DB_HOST}`)
       .concat(`:${DB_PORT}`)
       .concat(`/${POSTGRES_DB}`);
-    console.log(databaseUrl)
   } else {
     databaseUrl = process.env.DATABASE_URL;
   }
