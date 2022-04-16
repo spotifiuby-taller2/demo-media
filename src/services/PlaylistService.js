@@ -65,11 +65,10 @@ const createPlaylist = async (playlistData) => {
 const findSongs = async ids => {
   const savedSongs = await Song.findAll({
     attributes: ['id', 'title', 'description', 'artist', 'author', 'genre', 'subscription', 'link'], where: {id: ids},
-  })
-    .catch(error => {
-      Logger.error(`No se pudieron obtener las canciones de la base de datos: ${error.toString()}`);
-      throw utils.newError(500, 'Error al obtener las canciones');
-    });
+  }).catch(error => {
+    Logger.error(`Error al obtener canciones de la base de datos: ${error.toString()}`);
+    throw utils.newError(500, 'Error al obtener las canciones');
+  });
 
   if (ids.length !== savedSongs.length) {
     Logger.error('Hay canciones invalidas o no existentes');
@@ -79,7 +78,35 @@ const findSongs = async ids => {
   return savedSongs;
 }
 
+const findPlaylists = (filters) => {
+  return Playlist.findAll({
+    where: filters,
+  }).catch(error => {
+    Logger.error(`Error al obtener playlists de la base de datos: ${error.toString()}`);
+    throw utils.newError(500, 'Error al obtener las playlists');
+  });
+}
+
+const getPlaylists = async (req, res) => {
+  const title = req.query.title;
+  const owner = req.query.owner;
+  let filters = {};
+  if (title !== undefined) {
+    filters.title = title;
+  }
+  if (owner !== undefined) {
+    filters.owner = owner;
+  }
+  try {
+    const playlists = await findPlaylists(filters)
+    res.status(200).json(playlists);
+  } catch (error) {
+    res.status(error.status).json(error.body);
+  }
+}
+
 module.exports = {
   getPlaylist,
+  getPlaylists,
   newPlaylist,
 }
