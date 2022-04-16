@@ -5,7 +5,7 @@ const {Song} = require("../data/Media");
 async function newSong(req, res) {
     Logger.info("Creando nueva cancion.");
 
-    const {title, description, artist, author, susbcription, genre, link} = req.body;
+    const {title, description, artist, author, subscription, genre, link} = req.body;
 
     if (utils.areAnyUndefined([title, artist, link])) {
         Logger.error(`Error: title, artist y link son obligatorios.`);
@@ -19,7 +19,7 @@ async function newSong(req, res) {
             description: description,
             artist: artist,
             author: author,
-            subscription: susbcription,
+            subscription: subscription,
             genre: genre,
             link: link
         }
