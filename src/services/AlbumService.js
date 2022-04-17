@@ -1,64 +1,106 @@
 const utils = require("../others/utils");
 const Logger = require("./Logger");
-const {Song, Album} = require("../data/Media");
+const {Song, Album, Playlist} = require("../data/Media");
 
-async function newAlbum(req, res) {
-
+const newAlbum = async (req, res) => {
   const {title, artist, genre, subscription, link, songs} = req.body;
-
   if (utils.areAnyUndefined([title, artist, genre, subscription, songs])) {
     Logger.error(`Error: title, artist, genre, subscription y songs son campos obligatorios.`);
     utils.setErrorResponse(`Error: title, artist, genre, subscription y songs son campos obligatorios.`, 400, res);
     return;
   }
-
-  const savedSongs = await Song.findAll({
-      attributes: ['id', 'title', 'description', 'artist', 'author', 'genre', 'subscription', 'link'],
-      where: {
-        id: songs
-      }
-    }
-  ).catch(error => {
-    Logger.error(`No se pudieron obtener las canciones de la base de datos: ${error.toString()}`);
-    utils.setErrorResponse("No se pudieron obtener las canciones", 500, res);
-  });
-
-  if (savedSongs === null || savedSongs === undefined) {
-    Logger.error("No se pudieron obtener las canciones de la base de datos");
-    utils.setErrorResponse("No se pudieron obtener las canciones", 500, res);
-    return
+  try {
+    const album = await createAlbum({title, artist, genre, subscription, link, songs});
+    Logger.info("Album Creado");
+    res.status(200).json(album);
+  } catch (error) {
+    res.status(error.status).json(error.body);
   }
-
-  const saved = await Album.create(
-    {
-      title: title,
-      artist: artist,
-      genre: genre,
-      subscription: subscription,
-      link: link,
-    }
-  ).then(async alb => {
-    await alb.addSongs(savedSongs);
-    return {
-      id: alb.id,
-      title: alb.title,
-      artist: alb.artist,
-      genre: alb.genre,
-      subscription: alb.subscription,
-      link: alb.link,
-      songs: savedSongs
-    }
-  }).catch(error => {
-    Logger.error(`Error al intentar guardar en la base de datos: ${error.toString()}`);
-    utils.setErrorResponse(`Error tratando de crear el album.`, 500, res);
-  });
-
-  if (saved === undefined) {
-    Logger.error(`Error al intentar guardar en la base de datos.`);
-    utils.setErrorResponse(`Error tratando de crear la cancion.`, 500, res);
-  }
-  if (res.statusCode >= 400) return;
-  utils.setBodyResponse(saved, 200, res);
 }
 
-module.exports = {newAlbum};
+const createAlbum = async (albumData) => {
+  const songs = await findSongs(albumData.songs);
+
+  return Album.create(
+    {
+      title: albumData.title,
+      artist: albumData.artist,
+      genre: albumData.genre,
+      subscription: albumData.subscription,
+      link: albumData.link,
+    }
+  ).then(async album => {
+    await album.addSongs(songs);
+    return {...album.get({plain: true}), songs: songs};
+  }).catch(error => {
+    Logger.error(`Error al intentar guardar en la base de datos: ${error.toString()}`);
+    throw utils.newError(500, 'Error tratando de crear el album.');
+  });
+}
+
+const findSongs = async ids => {
+  const savedSongs = await Song.findAll({
+    attributes: ['id', 'title', 'description', 'artist', 'author', 'genre', 'subscription', 'link'], where: {id: ids},
+  }).catch(error => {
+    Logger.error(`Error al obtener canciones de la base de datos: ${error.toString()}`);
+    throw utils.newError(500, 'Error al obtener las canciones');
+  });
+  if (ids.length !== savedSongs.length) {
+    Logger.error('Hay canciones invalidas o no existentes');
+    throw utils.newError(400, 'Hay canciones invalidas o no existentes');
+  }
+  return savedSongs;
+}
+
+const getAlbum = async (req, res) => {
+  try {
+    const album = await findAlbum(req.params.id);
+    Logger.info("Album obtenido");
+    res.status(200).json(album);
+  } catch (error) {
+    res.status(error.status).json(error.body);
+  }
+}
+
+const findAlbum = async id => {
+  return Album.findOne({where: {id}, include: {model: Song, through: {attributes: []}}})
+    .catch(error => {
+      Logger.error(`Error al intentar obtener el album en la base de datos: ${error.toString()}`);
+      throw utils.newError(500, 'Error tratando de obtener el album.');
+    })
+    .then(album => {
+      if (album === null || album === undefined) {
+        const message = `Album with id: ${id} does not exist`;
+        Logger.error(message);
+        throw utils.newError(404, message);
+      }
+      return album;
+    })
+}
+
+const findAlbums = (filters) => {
+  return Album.findAll({
+    where: filters,
+  }).catch(error => {
+    Logger.error(`Error al obtener albums de la base de datos: ${error.toString()}`);
+    throw utils.newError(500, 'Error al obtener las albums');
+  });
+}
+
+const getAlbums = async (req, res) => {
+  const where = {};
+  const {title, artist, genre, subscription} = req.query;
+  if (title !== undefined) where.title = title
+  if (artist !== undefined) where.artist = artist
+  if (genre !== undefined) where.genre = genre
+  if (subscription !== undefined) where.subscription = subscription
+  try {
+    const albums = await findAlbums(where)
+    Logger.info(`Albumes obtenidos: ${albums.length}`);
+    res.status(200).json(albums);
+  } catch (error) {
+    res.status(error.status).json(error.body);
+  }
+}
+
+module.exports = {newAlbum, getAlbum, getAlbums};

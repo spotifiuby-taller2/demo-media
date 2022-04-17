@@ -44,22 +44,32 @@ router.get(constants.SONG_URL + "/:id", async (req, res) => {
 });
 
 router.post(constants.ALBUM_URL, async (req, res) => {
-  Logger.request("Crear nuevo album");
+  Logger.request("Crear nuevo album.");
   await AlbumService.newAlbum(req, res);
 });
 
+router.get(constants.ALBUM_URL + "/:id", async (req, res) => {
+  Logger.request("Obtener album.");
+  await AlbumService.getAlbum(req, res);
+});
+
+router.get(constants.ALBUM_URL, async (req, res) => {
+  Logger.request("Obtener albumes.");
+  await AlbumService.getAlbums(req, res);
+});
+
 router.post(constants.PLAYLIST_URL, async (req, res) => {
-  Logger.request("Crear nueva playlist");
+  Logger.request("Crear nueva playlist.");
   await PlaylistService.newPlaylist(req, res);
 });
 
 router.get(constants.PLAYLIST_URL, async (req, res) => {
-  Logger.request("Obtener listado de playlists");
+  Logger.request("Obtener listado de playlists.");
   await PlaylistService.getPlaylists(req, res);
 });
 
 router.get(`${constants.PLAYLIST_URL}/:id`, async (req, res) => {
-  Logger.request('Obtener playlist')
+  Logger.request('Obtener playlist.')
   await PlaylistService.getPlaylist(req, res);
 })
 
