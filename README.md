@@ -6,7 +6,7 @@
 
 - #### Local
     * `npm ci`
-    * Como pre-requisito se debe tener levantada una base de PostgreSLQ que escuche en `localhost:5432`
+    * Tener levantada PostgreSLQ en `localhost:5432` con una base de datos "media_db".
     * `npm run startdev`
 
 - #### Local con Docker Compose
@@ -16,4 +16,6 @@ docker-compose up --build
 
 ### Arquitectura
 
-### [Bitácora y Postmortem](https://edjeordjian.github.io/bitacora/)
+### [Arquitectura](https://drive.google.com/file/d/1aOISbgnXT0ToTs0DnvuCf7xsU4iSmJUU/view?usp=sharing)
+
+### [Bitácora y Postmortem](https://spotifiuby-taller2.github.io/bitacora/)
