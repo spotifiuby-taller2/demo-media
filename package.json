@@ -39,6 +39,17 @@
     "nodemon": "2.0.15",
     "nyc": "15.1.0",
     "rewire": "6.0.0",
-    "sinon": "^13.0.2"
+    "sinon": "13.0.2"
+  },
+  "nyc": {
+    "exclude": [
+      "src/main/App.js",
+      "src/main/SwaggerConfig.js",
+      "src/others/constants.js",
+      "src/services/Logger.js",
+      "**/*.test.js",
+      "test/mocks/*",
+      "coverage/*"
+    ]
   }
 }
