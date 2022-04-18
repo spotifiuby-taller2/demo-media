@@ -60,7 +60,7 @@ describe('AlbumService', function () {
   describe('newAlbum', function () {
     it('creates a new album', async function () {
       const songIds = [1, 2, 3];
-      const songs = [{}, {}, {}]
+      const songs = [{artist: "artist", id: 1}, {artist: "artist", id: 2}, {artist: "artist", id: 3}]
       const songFindAllFake = sinon.fake.returns(Promise.resolve(songs))
       const albumAddSongsFake = sinon.fake.returns(Promise.resolve());
       const album = {

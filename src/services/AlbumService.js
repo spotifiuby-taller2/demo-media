@@ -1,6 +1,6 @@
 const utils = require("../others/utils");
 const Logger = require("./Logger");
-const {Song, Album, Playlist} = require("../data/Media");
+const {Song, Album} = require("../data/Media");
 
 const newAlbum = async (req, res) => {
   const {title, artist, genre, subscription, link, songs} = req.body;
@@ -20,6 +20,11 @@ const newAlbum = async (req, res) => {
 
 const createAlbum = async (albumData) => {
   const songs = await findSongs(albumData.songs);
+
+  if(songs.some(song => song.artist !== albumData.artist)){
+    Logger.error('Se quieren agregar canciones de terceros al album');
+    throw utils.newError(400, 'Se quieren agregar canciones de terceros al album');
+  }
 
   return Album.create(
     {

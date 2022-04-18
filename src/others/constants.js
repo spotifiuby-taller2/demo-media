@@ -80,6 +80,9 @@ if (isDevelopment) {
     .split("/")[1];
 }
 
+const MY_API_KEY = "938187f0c06221997960c36a7a85a30b2da2cb6e9a91962287a278c4ac1c7f8a";
+
+
 module.exports = {
   DB_USER,
   DB_PASSWORD,
@@ -97,6 +100,7 @@ module.exports = {
   TIMEZONE,
   MAX_STR_FIREBASE_LINK,
   RESET_DATABASE,
+  MY_API_KEY,
   isDevelopment,
   LOG_LEVEL,
   AUTH_FRONT,
