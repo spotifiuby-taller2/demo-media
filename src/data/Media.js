@@ -160,6 +160,11 @@ const Playlist = database.define('playlist',
       validate: {notEmpty: true},
       unique: false
     },
+    isCollaborative: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   {
     indexes: [

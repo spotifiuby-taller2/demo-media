@@ -66,6 +66,14 @@ async function runMigrations() {
       unique: true
     })
     .catch(error => console.log(error.toString()));
+
+  await queryInterface.addColumn('playlists',
+    'isCollaborative', {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    })
+    .catch(error => console.log(error.toString()));
 }
 
 //TODO

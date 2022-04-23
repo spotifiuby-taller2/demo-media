@@ -52,6 +52,7 @@ const createPlaylist = async (playlistData) => {
       title: playlistData.title,
       description: playlistData.description,
       owner: playlistData.owner,
+      isCollaborative: playlistData.isCollaborative || false,
     }
   ).then(async playlist => {
     await playlist.addSongs(songs);
