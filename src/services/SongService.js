@@ -1,12 +1,14 @@
 const utils = require("../others/utils");
 const Logger = require("./Logger");
 const {Song} = require("../data/Media");
+const {Op} = require('sequelize');
+
 
 async function newSong(req, res) {
   Logger.info("Creando nueva cancion.");
-  const {title, description, artist, author, subscription, genre, link} = req.body;
-  if (utils.areAnyUndefined([title, artist, link])) {
-    Logger.error(`Error: title, artist y link son obligatorios.`);
+  const {title, description, artists, author, subscription, genre, link} = req.body;
+  if (utils.areAnyUndefined([title, artists, link])) {
+    Logger.error(`Error: title, artists y link son obligatorios.`);
     utils.setErrorResponse(`Error: title, artist y link son obligatorios.`, 400, res);
     return;
   }
@@ -14,7 +16,7 @@ async function newSong(req, res) {
     {
       title: title,
       description: description,
-      artist: artist,
+      artists: artists,
       author: author,
       subscription: subscription,
       genre: genre,
@@ -39,18 +41,19 @@ async function getSongs(req, res) {
   const {title, artist, genre, subscription} = req.query;
   const where = {};
   if (title !== undefined) where.title = title
-  if (artist !== undefined) where.artist = artist
+  if (artist !== undefined) where.artists = {[Op.contains]: [artist]}
   if (genre !== undefined) where.genre = genre
   if (subscription !== undefined) where.subscription = subscription
 
   const songs = await Song.findAll({
       where: where,
-      attributes: ['id', 'title', 'description', 'artist', 'author', 'subscription', 'genre', 'link']
+      attributes: ['id', 'title', 'description', 'artists', 'author', 'subscription', 'genre', 'link']
     }
   ).catch(error => {
     Logger.error(`No se pudieron obtener las canciones de la base de datos: ${error.toString()}`);
     utils.setErrorResponse("No se pudieron obtener las canciones", 500, res);
   });
+
   if (songs === null || songs === undefined) {
     Logger.error("No se pudieron obtener las canciones de la base de datos");
     utils.setErrorResponse("No se pudieron obtener las canciones", 500, res);
@@ -65,7 +68,7 @@ async function getSong(req, res) {
   const id = req.params.id;
   const song = await Song.findOne({
     where: {id},
-    attributes: ['id', 'title', 'description', 'artist', 'author', 'subscription', 'genre', 'link']
+    attributes: ['id', 'title', 'description', 'artists', 'author', 'subscription', 'genre', 'link']
   }).catch(error => {
     Logger.error(`No se pudo obtener la cancion de la base de datos: ${error.toString()}`);
     utils.setErrorResponse("No se pudo obtener la cancion", 500, res);

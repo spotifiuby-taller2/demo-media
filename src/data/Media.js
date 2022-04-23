@@ -18,8 +18,8 @@ const Song = database.define('song',
       defaultValue: ''
     },
 
-    artist: {
-      type: Sequelize.STRING(constants.FIREBASE_MAX_LEN),
+    artists: {
+      type: Sequelize.ARRAY(Sequelize.STRING(constants.FIREBASE_MAX_LEN)),
       allowNull: false,
       validate: {notEmpty: true},
       unique: false
@@ -58,7 +58,7 @@ const Song = database.define('song',
         fields: ['title']
       },
       {
-        fields: ['artist']
+        fields: ['artists']
       },
       {
         fields: ['genre']
