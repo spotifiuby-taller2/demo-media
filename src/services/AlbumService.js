@@ -1,16 +1,17 @@
 const utils = require("../others/utils");
 const Logger = require("./Logger");
 const {Song, Album} = require("../data/Media");
+const {Op} = require("sequelize");
 
 const newAlbum = async (req, res) => {
-  const {title, artist, genre, subscription, link, songs} = req.body;
-  if (utils.areAnyUndefined([title, artist, genre, subscription, songs])) {
-    Logger.error(`Error: title, artist, genre, subscription y songs son campos obligatorios.`);
-    utils.setErrorResponse(`Error: title, artist, genre, subscription y songs son campos obligatorios.`, 400, res);
+  const {title, artists, genre, subscription, link, songs} = req.body;
+  if (utils.areAnyUndefined([title, artists, genre, subscription, songs])) {
+    Logger.error(`Error: title, artists, genre, subscription y songs son campos obligatorios.`);
+    utils.setErrorResponse(`Error: title, artists, genre, subscription y songs son campos obligatorios.`, 400, res);
     return;
   }
   try {
-    const album = await createAlbum({title, artist, genre, subscription, link, songs});
+    const album = await createAlbum({title, artists, genre, subscription, link, songs});
     Logger.info("Album Creado");
     res.status(200).json(album);
   } catch (error) {
@@ -21,7 +22,11 @@ const newAlbum = async (req, res) => {
 const createAlbum = async (albumData) => {
   const songs = await findSongs(albumData.songs);
 
-  if(songs.some(song => song.artist !== albumData.artist)){
+  if (!songs.every(song => {
+    return song.artists.some(a => {
+      return albumData.artists.includes(a)
+    })
+  })) {
     Logger.error('Se quieren agregar canciones de terceros al album');
     throw utils.newError(400, 'Se quieren agregar canciones de terceros al album');
   }
@@ -29,7 +34,7 @@ const createAlbum = async (albumData) => {
   return Album.create(
     {
       title: albumData.title,
-      artist: albumData.artist,
+      artists: albumData.artists,
       genre: albumData.genre,
       subscription: albumData.subscription,
       link: albumData.link,
@@ -45,7 +50,7 @@ const createAlbum = async (albumData) => {
 
 const findSongs = async ids => {
   const savedSongs = await Song.findAll({
-    attributes: ['id', 'title', 'description', 'artist', 'author', 'genre', 'subscription', 'link'], where: {id: ids},
+    attributes: ['id', 'title', 'description', 'artists', 'author', 'genre', 'subscription', 'link'], where: {id: ids},
   }).catch(error => {
     Logger.error(`Error al obtener canciones de la base de datos: ${error.toString()}`);
     throw utils.newError(500, 'Error al obtener las canciones');
@@ -86,6 +91,7 @@ const findAlbum = async id => {
 const findAlbums = (filters) => {
   return Album.findAll({
     where: filters,
+    include: {model: Song, through: {attributes: []}}
   }).catch(error => {
     Logger.error(`Error al obtener albums de la base de datos: ${error.toString()}`);
     throw utils.newError(500, 'Error al obtener las albums');
@@ -96,7 +102,7 @@ const getAlbums = async (req, res) => {
   const where = {};
   const {title, artist, genre, subscription} = req.query;
   if (title !== undefined) where.title = title
-  if (artist !== undefined) where.artist = artist
+  if (artist !== undefined) where.artists = {[Op.contains]: [artist]}
   if (genre !== undefined) where.genre = genre
   if (subscription !== undefined) where.subscription = subscription
   try {

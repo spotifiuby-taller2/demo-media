@@ -89,8 +89,8 @@ const Album = database.define('album',
       unique: false
     },
 
-    artist: {
-      type: Sequelize.STRING(constants.FIREBASE_MAX_LEN),
+    artists: {
+      type: Sequelize.ARRAY(Sequelize.STRING(constants.FIREBASE_MAX_LEN)),
       allowNull: false,
       validate: {notEmpty: true},
       unique: false
@@ -109,7 +109,7 @@ const Album = database.define('album',
         fields: ['title']
       },
       {
-        fields: ['artist']
+        fields: ['artists']
       },
       {
         fields: ['genre']
@@ -160,6 +160,7 @@ const Playlist = database.define('playlist',
       validate: {notEmpty: true},
       unique: false
     },
+
     isCollaborative: {
       type: Sequelize.BOOLEAN,
       allowNull: false,
@@ -177,7 +178,7 @@ const Playlist = database.define('playlist',
     ]
   });
 
-const AlbumPlaylist = database.define('album_playlist', {
+const PlaylistSong = database.define('playlist_song', {
   playlistId: {
     type: Sequelize.INTEGER,
     references: {
@@ -194,7 +195,7 @@ const AlbumPlaylist = database.define('album_playlist', {
   }
 });
 
-Playlist.belongsToMany(Song, {through: AlbumPlaylist});
-Song.belongsToMany(Playlist, {through: AlbumPlaylist});
+Playlist.belongsToMany(Song, {through: PlaylistSong});
+Song.belongsToMany(Playlist, {through: PlaylistSong});
 
 module.exports = {Song, Album, Playlist};
