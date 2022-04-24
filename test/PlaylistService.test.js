@@ -77,6 +77,7 @@ describe('PlaylistService', function() {
       const req = {body: {
         title: 'some title',
         owner: 'the owner',
+        isCollaborative: false,
         songs: songIds,
       }};
       const res = mockResponse();

@@ -60,7 +60,11 @@ describe('AlbumService', function () {
   describe('newAlbum', function () {
     it('creates a new album', async function () {
       const songIds = [1, 2, 3];
-      const songs = [{artist: "artist", id: 1}, {artist: "artist", id: 2}, {artist: "artist", id: 3}]
+      const songs = [
+        {artists: ["artist1"], id: 1},
+        {artists: ["artist2"], id: 2},
+        {artists: ["artist1", "artist2"], id: 3}
+      ];
       const songFindAllFake = sinon.fake.returns(Promise.resolve(songs))
       const albumAddSongsFake = sinon.fake.returns(Promise.resolve());
       const album = {
@@ -68,7 +72,7 @@ describe('AlbumService', function () {
         title: 'some title',
         subscription: 'free',
         genre: 'rock',
-        artist: 'artist',
+        artists: ['artist1', 'artist2'],
       };
       album.get = () => album;
       const albumCreateFake = sinon.fake.returns(Promise.resolve(album));
@@ -81,7 +85,7 @@ describe('AlbumService', function () {
           title: 'some title',
           subscription: 'free',
           genre: 'rock',
-          artist: 'artist',
+          artists: ['artist1', 'artist2'],
           songs: songIds,
         }
       };
@@ -94,7 +98,7 @@ describe('AlbumService', function () {
         title: 'some title',
         subscription: 'free',
         genre: 'rock',
-        artist: 'artist',
+        artists: ['artist1', 'artist2'],
         songs: songs,
       })));
       assert(songFindAllFake.calledWith(sinon.match({where: {id: songIds}})));
