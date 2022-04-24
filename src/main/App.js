@@ -19,16 +19,16 @@ class App {
   }
 
   async syncDB() {
-    if (!constants.isDevelopment) {
-      await runMigrations();
-    }
-
     // "sync()" creates the database table for our model(s),
     // if we make .sync({force: true}),
     // the db is dropped first if it is already existed
     await database.sync({
       force: constants.RESET_DATABASE
     });
+
+    if (!constants.isDevelopment) {
+      await runMigrations();
+    }
 
     this.app
       .listen(constants.NODE_PORT, () => {
