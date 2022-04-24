@@ -80,7 +80,7 @@ const findAlbum = async id => {
     })
     .then(album => {
       if (album === null || album === undefined) {
-        const message = `Album with id: ${id} does not exist`;
+        const message = `Album con id: ${id} no existe`;
         Logger.error(message);
         throw utils.newError(404, message);
       }

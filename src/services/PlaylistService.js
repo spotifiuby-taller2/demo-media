@@ -30,9 +30,9 @@ const findPlaylist = async id => {
 const newPlaylist = async (req, res) => {
   const {title, description, owner, isCollaborative, songs} = req.body;
 
-  if (utils.areAnyUndefined([title, owner, songs])) {
-    Logger.error('Error: title, owner y songs son obligatorios.');
-    utils.setErrorResponse('title, owner y songs son obligatorios.', 400, res);
+  if (utils.areAnyUndefined([title, owner, songs, isCollaborative])) {
+    Logger.error('Error: title, owner, isCollaborative y songs son obligatorios.');
+    utils.setErrorResponse('title, owner, isCollaborative y songs son obligatorios.', 400, res);
     return;
   }
 
@@ -65,7 +65,7 @@ const createPlaylist = async (playlistData) => {
 
 const findSongs = async ids => {
   const savedSongs = await Song.findAll({
-    attributes: ['id', 'title', 'description', 'artist', 'author', 'genre', 'subscription', 'link'], where: {id: ids},
+    attributes: ['id', 'title', 'description', 'artists', 'author', 'genre', 'subscription', 'link'], where: {id: ids},
   }).catch(error => {
     Logger.error(`Error al obtener canciones de la base de datos: ${error.toString()}`);
     throw utils.newError(500, 'Error al obtener las canciones');

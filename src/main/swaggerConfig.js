@@ -1,7 +1,9 @@
 const swaggerConfig = {
   definition: {
+    openapi: "3.0.0",
     info: {
-      title: "Media API",
+      version: "1.0.0",
+      title: "Spotifiuby Media API",
     },
     servers: [
       {
@@ -9,7 +11,7 @@ const swaggerConfig = {
         description: 'Local server'
       },
       {
-        url: 'https://HEROKU',
+        url: 'https://demo-media-2.herokuapp.com',
         description: 'Prod server'
       }
     ]

@@ -9,7 +9,7 @@ async function newSong(req, res) {
   const {title, description, artists, author, subscription, genre, link} = req.body;
   if (utils.areAnyUndefined([title, artists, link])) {
     Logger.error(`Error: title, artists y link son obligatorios.`);
-    utils.setErrorResponse(`Error: title, artist y link son obligatorios.`, 400, res);
+    utils.setErrorResponse(`Error: title, artists y link son obligatorios.`, 400, res);
     return;
   }
   const saved = await Song.create(
