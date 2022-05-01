@@ -1,140 +1,145 @@
 const database = require('./database');
 const Sequelize = require('sequelize');
 const constants = require("../others/constants");
+const {Song,
+       Playlist,
+       Album,
+       AlbumSong,
+       PlaylistSong} = require("../data/Media");
 const queryInterface = database.getQueryInterface();
 
 async function runMigrations() {
 
-  await queryInterface.addColumn('song', 'title', {
+  await queryInterface.addColumn(Song.tableName, 'title', {
     type: Sequelize.STRING(constants.MAX_STR_LEN),
     allowNull: false,
     validate: {notEmpty: true},
     unique: false
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('song', 'description', {
+  await queryInterface.addColumn(Song.tableName, 'description', {
     type: Sequelize.STRING(constants.MAX_STR_LEN),
     allowNull: true,
     unique: false,
     defaultValue: ''
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.removeColumn('song', 'artist')
+  await queryInterface.removeColumn(Song.tableName, 'artist')
     .catch(e => {
       console.log(e);
     });
 
-  await queryInterface.addColumn('song', 'artists', {
+  await queryInterface.addColumn(Song.tableName, 'artists', {
     type: Sequelize.ARRAY(Sequelize.STRING(constants.FIREBASE_MAX_LEN)),
     allowNull: false,
     validate: {notEmpty: true},
     unique: false
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('song', 'author', {
+  await queryInterface.addColumn(Song.tableName, 'author', {
     type: Sequelize.STRING(constants.MAX_STR_LEN),
     allowNull: true,
     unique: false,
     defaultValue: ''
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('song', 'subscription', {
+  await queryInterface.addColumn(Song.tableName, 'subscription', {
     type: Sequelize.STRING(constants.MAX_STR_LEN),
     allowNull: false,
     unique: false,
     defaultValue: 'FREE'
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('song', 'genre', {
+  await queryInterface.addColumn(Song.tableName, 'genre', {
     type: Sequelize.STRING(constants.MAX_STR_LEN),
     allowNull: true,
     unique: false,
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('song', 'link', {
+  await queryInterface.addColumn(Song.tableName, 'link', {
     type: Sequelize.STRING(constants.MAX_STR_FIREBASE_LINK),
     allowNull: false,
     validate: {notEmpty: true},
     unique: false
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('album', 'title', {
+  await queryInterface.addColumn(Album.tableName, 'title', {
     type: Sequelize.STRING(constants.MAX_STR_LEN),
     allowNull: false,
     validate: {notEmpty: true},
     unique: false,
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('album', 'genre', {
+  await queryInterface.addColumn(Album.tableName, 'genre', {
     type: Sequelize.STRING(constants.MAX_STR_LEN),
     allowNull: false,
     validate: {notEmpty: true},
     unique: false
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('album', 'link', {
+  await queryInterface.addColumn(Album.tableName, 'link', {
     type: Sequelize.STRING(constants.MAX_STR_FIREBASE_LINK),
     allowNull: true,
     unique: false
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.removeColumn('album', 'artist')
+  await queryInterface.removeColumn(Album.tableName, 'artist')
     .catch(e => {
       console.log(e);
     });
 
-  await queryInterface.addColumn('album', 'artists', {
+  await queryInterface.addColumn(Album.tableName, 'artists', {
     type: Sequelize.ARRAY(Sequelize.STRING(constants.FIREBASE_MAX_LEN)),
     allowNull: false,
     validate: {notEmpty: true},
     unique: false
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('album', 'subscription', {
+  await queryInterface.addColumn(Album.tableName, 'subscription', {
     type: Sequelize.STRING(constants.MAX_STR_LEN),
     allowNull: false,
     unique: false,
     defaultValue: 'FREE'
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('album_song', 'albumId', {
+  await queryInterface.addColumn(AlbumSong.tableName, 'albumId', {
     type: Sequelize.INTEGER,
     references: {
-      model: 'Album',
+      model: Album.tableName,
       key: 'id'
     }
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('album_song', 'songId', {
+  await queryInterface.addColumn(AlbumSong.tableName, 'songId', {
     type: Sequelize.INTEGER,
     references: {
-      model: 'Song',
+      model: Song.tableName,
       key: 'id'
     }
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('playlists', 'title', {
+  await queryInterface.addColumn(Playlist.tableName, 'title', {
     type: Sequelize.STRING(constants.MAX_STR_LEN),
     allowNull: false,
     validate: {notEmpty: true},
     unique: false
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('playlists', 'description', {
+  await queryInterface.addColumn(Playlist.tableName, 'description', {
     type: Sequelize.STRING(constants.MAX_STR_LEN),
     allowNull: true,
     unique: false,
     defaultValue: ''
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('playlists', 'owner', {
+  await queryInterface.addColumn(Playlist.tableName, 'owner', {
     type: Sequelize.STRING(constants.FIREBASE_MAX_LEN),
     allowNull: false,
     validate: {notEmpty: true},
     unique: false
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('playlists', 'isCollaborative', {
+  await queryInterface.addColumn(Playlist.tableName, 'isCollaborative', {
     type: Sequelize.BOOLEAN,
     allowNull: false,
     defaultValue: false,
@@ -143,7 +148,7 @@ async function runMigrations() {
   await queryInterface.dropTable('album_playlist')
     .catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('playlist_song', 'playlistId', {
+  await queryInterface.addColumn(PlaylistSong, 'playlistId', {
     type: Sequelize.INTEGER,
     references: {
       model: 'Playlist',
@@ -151,10 +156,10 @@ async function runMigrations() {
     }
   }).catch(error => console.log(error.toString()));
 
-  await queryInterface.addColumn('playlist_song', 'songId', {
+  await queryInterface.addColumn(PlaylistSong, 'songId', {
     type: Sequelize.INTEGER,
     references: {
-      model: 'Song',
+      model: Song.tableName,
       key: 'id'
     }
   }).catch(error => console.log(error.toString()));

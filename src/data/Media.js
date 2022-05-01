@@ -54,15 +54,15 @@ const Song = database.define('song',
   },
   {
     indexes: [
-      {
+      /*{
         fields: ['title']
-      },
+      },*/
       {
         fields: ['artists']
       },
-      {
+      /*{
         fields: ['genre']
-      }
+      }*/
     ]
   });
 
@@ -198,4 +198,9 @@ const PlaylistSong = database.define('playlist_song', {
 Playlist.belongsToMany(Song, {through: PlaylistSong});
 Song.belongsToMany(Playlist, {through: PlaylistSong});
 
-module.exports = {Song, Album, Playlist};
+module.exports = {
+    Song,
+    Album,
+    Playlist,
+    AlbumSong,
+    PlaylistSong};
