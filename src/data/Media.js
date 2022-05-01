@@ -19,7 +19,7 @@ const Song = database.define('song',
     },
 
     artists: {
-      type: Sequelize.ARRAY(Sequelize.STRING(constants.FIREBASE_MAX_LEN)),
+      type: Sequelize.ARRAY(Sequelize.STRING(20 * constants.FIREBASE_MAX_LEN)),
       allowNull: false,
       validate: {notEmpty: true},
       unique: false
