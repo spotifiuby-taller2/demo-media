@@ -6,6 +6,7 @@ const {Song,
        Album,
        AlbumSong,
        PlaylistSong} = require("../data/Media");
+
 const queryInterface = database.getQueryInterface();
 
 async function runMigrations() {
