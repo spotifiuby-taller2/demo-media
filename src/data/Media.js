@@ -54,7 +54,7 @@ const Song = database.define('song',
   },
   {
     indexes: [
-      {
+      /*{
         fields: ['title']
       },
       {
@@ -62,7 +62,7 @@ const Song = database.define('song',
       },
       {
         fields: ['genre']
-      }
+      }*/
     ]
   });
 

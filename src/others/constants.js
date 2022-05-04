@@ -20,9 +20,9 @@ const USERS_HOST = process.env.USERS_HOST;
 
 
 /* Backends paths */
-const SONG_URL = "/songs"
-const ALBUM_URL = "/albums"
-const PLAYLIST_URL = "/playlists"
+const SONG_URL = "/songs";
+const ALBUM_URL = "/albums";
+const PLAYLIST_URL = "/playlists";
 
 /* ====== Production vs Development config ====== */
 const isDevelopment = process.env.PRODUCTION === undefined;
