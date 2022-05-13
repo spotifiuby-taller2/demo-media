@@ -13,16 +13,31 @@ const LOG_LEVEL = process.env.LOG_LEVEL;
 
 const RESET_DATABASE = false;
 
-/* Frontend hosts */
-const BACKOFFICE_HOST = process.env.BACKOFFICE_HOST;
-const AUTH_FRONT = process.env.AUTH_FRONT;
-const USERS_HOST = process.env.USERS_HOST;
+const JSON_HEADER = {
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*'
+}
 
+/* Frontend hosts */
+const BACKOFFICE_HOST = process.env
+                               .BACKOFFICE_HOST;
+
+const AUTH_FRONT = process.env
+                          .AUTH_FRONT;
+
+const USERS_HOST = process.env
+                          .USERS_HOST;
+
+const SERVICES_HOST = process.env
+                             .SERVICES_HOST;
 
 /* Backends paths */
 const SONG_URL = "/songs";
 const ALBUM_URL = "/albums";
 const PLAYLIST_URL = "/playlists";
+
+const REDIRECT_URL = "/redirect";
+const PARSE_USERS_URL= "/parse";
 
 /* ====== Production vs Development config ====== */
 const isDevelopment = process.env.PRODUCTION === undefined;
@@ -36,7 +51,6 @@ let DB_PORT;
 let POSTGRES_DB;
 
 if (isDevelopment) {
-
   if (process.env.DATABASE_URL === undefined) {
     DB_USER = process.env.POSTGRES_USER;
     DB_PASSWORD = process.env.POSTGRES_PASSWORD;
@@ -82,7 +96,6 @@ if (isDevelopment) {
 
 const MY_API_KEY = "938187f0c06221997960c36a7a85a30b2da2cb6e9a91962287a278c4ac1c7f8a";
 
-
 module.exports = {
   DB_USER,
   DB_PASSWORD,
@@ -107,4 +120,8 @@ module.exports = {
   SONG_URL,
   ALBUM_URL,
   PLAYLIST_URL,
+  PARSE_USERS_URL,
+  SERVICES_HOST,
+  REDIRECT_URL,
+  JSON_HEADER
 }

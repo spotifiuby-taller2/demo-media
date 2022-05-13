@@ -1,3 +1,6 @@
+const constants = require('../others/constants');
+const fetch = require('node-fetch');
+
 function setBodyResponse(responseBody, status, res) {
   res.status(status).json(responseBody);
 }
@@ -25,10 +28,27 @@ function areAnyUndefined(list) {
   }).length > 0;
 }
 
+const postToGateway = (body) => {
+  body.verbRedirect = "POST";
+  body.apiKey = constants.MY_API_KEY;
+
+  return fetch(constants.SERVICES_HOST + constants.REDIRECT_URL, {
+        method: "POST",
+        headers: constants.JSON_HEADER,
+        body: JSON.stringify(body)
+      }
+  ).then(response =>
+      response.json()
+  ).catch(error => ({
+    error: error.toString()
+  }));
+}
+
 module.exports = {
   setErrorResponse,
   setBodyResponse,
   getDate,
   areAnyUndefined,
   newError,
+  postToGateway
 }

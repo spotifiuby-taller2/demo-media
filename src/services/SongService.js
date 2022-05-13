@@ -1,8 +1,9 @@
 const utils = require("../others/utils");
 const Logger = require("./Logger");
+const {postToGateway} = require("../others/utils");
 const {Song} = require("../data/Media");
 const {Op} = require('sequelize');
-
+const constants = require('../others/constants');
 
 async function newSong(req, res) {
   Logger.info("Creando nueva cancion.");
@@ -73,11 +74,29 @@ async function getSong(req, res) {
     Logger.error(`No se pudo obtener la cancion de la base de datos: ${error.toString()}`);
     utils.setErrorResponse("No se pudo obtener la cancion", 500, res);
   });
+
   if (song === undefined || song === null) {
     Logger.error("No se pudo obtener la cancion de la base de datos");
     utils.setErrorResponse("No se pudo obtener la cancion", 500, res);
   }
+
   if (res.statusCode >= 400) return;
+
+  const requestBody = {
+    usersIds: song.artists,
+
+    redirectTo: constants.USERS_HOST + constants.PARSE_USERS_URL
+  }
+
+  const response = await postToGateway(requestBody);
+
+  if (response.error !== undefined) {
+    Logger.error("No se pudo obtener los artistas de la canción.");
+    Logger.error(response.error);
+  } else {
+    song.artists = response;
+  }
+
   Logger.info(`Cancion obtenida: ${song.title}`)
   utils.setBodyResponse(song, 200, res);
 }
