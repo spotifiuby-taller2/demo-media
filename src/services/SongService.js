@@ -4,6 +4,7 @@ const {postToGateway} = require("../others/utils");
 const {Song} = require("../data/Media");
 const {Op} = require('sequelize');
 const constants = require('../others/constants');
+const {FavSongs} = require("../data/Media");
 
 async function newSong(req, res) {
   Logger.info("Creando nueva cancion.");
@@ -41,6 +42,8 @@ async function getSongs(req, res) {
   Logger.info("Obteniendo las canciones")
   const {title, artist, genre, subscription} = req.query;
   const where = {};
+  where.isBlocked = false;
+
   if (title !== undefined) where.title = title
   if (artist !== undefined) where.artists = {[Op.contains]: [artist]}
   if (genre !== undefined) where.genre = genre
@@ -68,9 +71,13 @@ async function getSong(req, res) {
   Logger.info("Get song by id");
   const id = req.params.id;
   const song = await Song.findOne({
-    where: {id},
+    where: {
+      [Op.and]:[
+          {id: id},
+          {isBlocked: false}
+      ] },
     attributes: ['id', 'title', 'description', 'artists', 'author', 'subscription', 'genre', 'link']
-  }).catch(error => {
+  } ).catch(error => {
     Logger.error(`No se pudo obtener la cancion de la base de datos: ${error.toString()}`);
     utils.setErrorResponse("No se pudo obtener la cancion", 500, res);
   });
@@ -101,4 +108,36 @@ async function getSong(req, res) {
   utils.setBodyResponse(song, 200, res);
 }
 
-module.exports = {newSong, getSongs, getSong};
+async function favSong(req,
+                       res) {
+  Logger.info("Request a " + constants.FAV_SONG);
+
+  const {userId,
+         songId} = req.body;
+
+  const response = await FavSongs.create({
+    userId: userId,
+    songId: songId,
+  }).catch(error => {
+    return {
+      error: error
+    }
+  });
+
+  if (response === null || response.error !== undefined) {
+    Logger.error(`No se pudo obtener la cancion de la base de datos: ${response.error}`);
+    return utils.setErrorResponse("No se pudo obtener la cancion", 500, res);
+  }
+
+  return utils.setBodyResponse({msg:
+                        "Canción agregada a favoritos"},
+                        200,
+                        res);
+}
+
+module.exports = {
+  newSong,
+  getSongs,
+  getSong,
+  favSong
+};

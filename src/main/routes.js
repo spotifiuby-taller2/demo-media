@@ -151,6 +151,41 @@ router.get(constants.SONG_URL, async (req, res) => {
 
 /**
  * @swagger
+ * /songs:
+ *    get:
+ *      tags: [Song]
+ *      summary: Get Songs.
+ *      description: "Add song to favorites."
+ *      parameters:
+ *         - name: "userId"
+ *           in: query
+ *           description: "User id"
+ *           schema:
+ *              type: string
+ *         - name: "songId"
+ *           in: query
+ *           description: "Song id."
+ *           schema:
+ *              type: string
+ *           example: artist1
+ *      responses:
+ *          "200":
+ *              description: "returns all songs that match the parameters."
+ *          "400":
+ *               description: "Could not get songs with this parameters"
+ *          "404":
+ *               description: "Not found."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.post(constants.FAV_SONG, async (req, res) => {
+  Logger.request("Agregar canción a favoritos.");
+  await SongService.favSong(req, res);
+});
+
+
+/**
+ * @swagger
  * /songs/{id}:
  *    get:
  *      tags: [Song]
