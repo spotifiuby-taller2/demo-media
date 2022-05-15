@@ -110,8 +110,6 @@ async function getSong(req, res) {
 
 async function favSong(req,
                        res) {
-  Logger.info("Request a " + constants.FAV_SONG);
-
   const {userId,
          songId} = req.body;
 
@@ -137,8 +135,6 @@ async function favSong(req,
 
 async function getFavoriteSongs(req,
                                 res) {
-  Logger.info("Request a " + constants.FAVORITE_SONGS);
-
   const userId = req.query
                     .userId;
 
