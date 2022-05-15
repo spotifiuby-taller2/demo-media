@@ -40,6 +40,8 @@ const REDIRECT_URL = "/redirect";
 const PARSE_USERS_URL= "/parse";
 const FAV_SONG = "/favsong";
 
+const FAVORITE_SONGS = SONG_URL + "/favorites";
+
 /* ====== Production vs Development config ====== */
 const isDevelopment = process.env.PRODUCTION === undefined;
 let databaseUrl;
@@ -125,5 +127,6 @@ module.exports = {
   SERVICES_HOST,
   REDIRECT_URL,
   JSON_HEADER,
-  FAV_SONG
+  FAV_SONG,
+  FAVORITE_SONGS
 }

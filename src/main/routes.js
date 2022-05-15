@@ -151,26 +151,25 @@ router.get(constants.SONG_URL, async (req, res) => {
 
 /**
  * @swagger
- * /songs:
- *    get:
+ * /favsong:
+ *    post:
  *      tags: [Song]
- *      summary: Get Songs.
+ *      summary: Add song to favorites.
  *      description: "Add song to favorites."
  *      parameters:
  *         - name: "userId"
- *           in: query
+ *           in: body
  *           description: "User id"
  *           schema:
  *              type: string
  *         - name: "songId"
- *           in: query
+ *           in: body
  *           description: "Song id."
  *           schema:
  *              type: string
- *           example: artist1
  *      responses:
  *          "200":
- *              description: "returns all songs that match the parameters."
+ *              description: "Song added to favorites."
  *          "400":
  *               description: "Could not get songs with this parameters"
  *          "404":
@@ -183,6 +182,34 @@ router.post(constants.FAV_SONG, async (req, res) => {
   await SongService.favSong(req, res);
 });
 
+
+/**
+ * @swagger
+ * /songs/favorites/:userId:
+ *    get:
+ *      tags: [Song]
+ *      summary: Get favorite songs of the user.
+ *      description: Get favorite songs of the user.
+ *      parameters:
+ *         - name: "userId"
+ *           in: query
+ *           description: "User id"
+ *           schema:
+ *              type: string
+ *      responses:
+ *          "200":
+ *              description: "returns all songs that match the parameters."
+ *          "400":
+ *               description: "Could not get songs with this parameters"
+ *          "404":
+ *               description: "Not found."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.get(constants.FAV_SONG, async (req, res) => {
+  Logger.request("Agregar canción a favoritos.");
+  await SongService.favSong(req, res);
+});
 
 /**
  * @swagger
@@ -211,7 +238,7 @@ router.post(constants.FAV_SONG, async (req, res) => {
  */
 router.get(constants.SONG_URL + "/:id", async (req, res) => {
   Logger.request("Obtener cancion.");
-  await SongService.getSong(req, res);
+  await SongService.getFavoriteSongs(req, res);
 });
 
 /**

@@ -125,8 +125,8 @@ async function favSong(req,
   });
 
   if (response === null || response.error !== undefined) {
-    Logger.error(`No se pudo obtener la cancion de la base de datos: ${response.error}`);
-    return utils.setErrorResponse("No se pudo obtener la cancion", 500, res);
+    Logger.error(`No se pudo obtener agregar la canción a favoritos: ${response.error}`);
+    return utils.setErrorResponse("No se pudo guardar la cancion", 500, res);
   }
 
   return utils.setBodyResponse({msg:
@@ -135,9 +135,54 @@ async function favSong(req,
                         res);
 }
 
+async function getFavoriteSongs(req,
+                                res) {
+  Logger.info("Request a " + constants.FAVORITE_SONGS);
+
+  const userId = req.query
+                    .userId;
+
+  const songs = [];
+
+  const response = await FavSongs.findAll( {
+    where: {
+      userId: userId
+    }
+  } ).catch(error => {
+    return {
+      error: error
+    }
+  });
+
+  if (response === null || response.error !== undefined) {
+    Logger.error(`No se pudo obtener las canciones favoritas: ${response.error}`);
+    return utils.setErrorResponse("No se pudieron traer las canciones.", 500, res);
+  }
+
+  response.forEach(pair => {
+    const song = Song.findOne( {
+      where: {
+        id: pair.songId
+      }
+    } ).then()
+      .catch(error => {
+      return {
+        error: error
+      }
+    } );
+
+    songs.push(song);
+  } );
+
+  return utils.setBodyResponse({songs: response},
+      200,
+      res);
+}
+
 module.exports = {
   newSong,
   getSongs,
   getSong,
-  favSong
+  favSong,
+  getFavoriteSongs
 };
