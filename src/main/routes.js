@@ -177,7 +177,7 @@ router.get(constants.SONG_URL, async (req, res) => {
  *          "500":
  *              description: "Internal Server Error: Cannot response the request"
  */
-router.post(constants.FAV_SONG, async (req, res) => {
+router.post(constants.FAVORITE_SONGS, async (req, res) => {
   Logger.request("Agregar canción a favoritos.");
   await SongService.favSong(req, res);
 });
@@ -206,7 +206,7 @@ router.post(constants.FAV_SONG, async (req, res) => {
  *          "500":
  *              description: "Internal Server Error: Cannot response the request"
  */
-router.get(constants.FAV_SONG, async (req, res) => {
+router.get(constants.FAVORITE_SONGS, async (req, res) => {
   Logger.request("Agregar canción a favoritos.");
   await SongService.favSong(req, res);
 });
@@ -238,7 +238,7 @@ router.get(constants.FAV_SONG, async (req, res) => {
  */
 router.get(constants.SONG_URL + "/:id", async (req, res) => {
   Logger.request("Obtener cancion.");
-  await SongService.getFavoriteSongs(req, res);
+  await SongService.getSong(req, res);
 });
 
 /**
