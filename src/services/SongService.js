@@ -155,22 +155,26 @@ async function getFavoriteSongs(req,
     return utils.setErrorResponse("No se pudieron traer las canciones.", 500, res);
   }
 
-  response.forEach(pair => {
-    const song = Song.findOne( {
+  const mapedSongs = response.map( async (element) => {
+    const pair = element.dataValues;
+
+    const song = await Song.findOne( {
       where: {
         id: pair.songId
       }
     } ).then()
-      .catch(error => {
-      return {
-        error: error
-      }
-    } );
+        .catch(error => {
+          return {
+            error: error
+          }
+        } );
 
-    songs.push(song);
+    return song.dataValues;
   } );
 
-  return utils.setBodyResponse({songs: response},
+  const solvedSongs = await Promise.all(mapedSongs);
+
+  return utils.setBodyResponse({songs: songs},
       200,
       res);
 }

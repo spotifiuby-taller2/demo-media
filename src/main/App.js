@@ -9,7 +9,7 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const {swaggerConfig} = require('./swaggerConfig');
 const swaggerDoc = swaggerJsDoc(swaggerConfig);
-const routes = require('./routes')
+const routes = require('./routes');
 
 class App {
   constructor() {
