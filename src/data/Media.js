@@ -50,11 +50,17 @@ const Song = database.define('song',
       allowNull: false,
       validate: {notEmpty: true},
       unique: false
-    }
+    },
+
+    isBlocked: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: false
+      },
   },
   {
     indexes: [
-      {
+      /*{
         fields: ['title']
       },
       {
@@ -62,7 +68,7 @@ const Song = database.define('song',
       },
       {
         fields: ['genre']
-      }
+      }*/
     ]
   });
 
@@ -101,7 +107,13 @@ const Album = database.define('album',
       allowNull: false,
       unique: false,
       defaultValue: 'FREE'
-    }
+    },
+
+    isBlocked: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: false
+    },
   },
   {
     indexes: [
@@ -166,6 +178,12 @@ const Playlist = database.define('playlist',
       allowNull: false,
       defaultValue: false,
     },
+
+    isBlocked: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: false
+    },
   },
   {
     indexes: [
@@ -195,6 +213,29 @@ const PlaylistSong = database.define('playlist_song', {
   }
 });
 
+const FavSongs = database.define('song_favs', {
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    songId: {
+        type: Sequelize.INTEGER,
+    },
+    userId: {
+        type: Sequelize.STRING(constants.MAX_STR_LEN),
+    },
+    createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false
+    },
+    updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false
+    },
+});
+
+
 Playlist.belongsToMany(Song, {through: PlaylistSong});
 Song.belongsToMany(Playlist, {through: PlaylistSong});
 
@@ -203,4 +244,5 @@ module.exports = {
     Album,
     Playlist,
     AlbumSong,
-    PlaylistSong};
+    PlaylistSong,
+    FavSongs};
