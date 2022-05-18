@@ -174,7 +174,7 @@ async function getFavoriteSongs(req,
 
   const solvedSongs = await Promise.all(mapedSongs);
 
-  return utils.setBodyResponse({songs: songs},
+  return utils.setBodyResponse({songs: solvedSongs},
       200,
       res);
 }
