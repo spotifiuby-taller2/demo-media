@@ -39,7 +39,7 @@ const PLAYLIST_URL = "/playlists";
 const REDIRECT_URL = "/redirect";
 const PARSE_USERS_URL= "/parse";
 const FAVORITE_SONGS = "/favoritesongs";
-
+const FAV_SONG = "/favsong";
 
 /* ====== Production vs Development config ====== */
 const isDevelopment = process.env.PRODUCTION === undefined;
@@ -127,4 +127,5 @@ module.exports = {
   REDIRECT_URL,
   JSON_HEADER,
   FAVORITE_SONGS,
+  FAV_SONG
 }
