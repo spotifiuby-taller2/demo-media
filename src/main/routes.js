@@ -3,9 +3,9 @@ const router = express.Router()
 const constants = require('../others/constants');
 const SongService = require('../services/SongService');
 const AlbumService = require('../services/AlbumService');
+const ContentManagementService = require('../services/ContentManagementService');
 const PlaylistService = require('../services/PlaylistService');
 const Logger = require("../services/Logger");
-
 
 /**
  * @swagger
@@ -92,7 +92,6 @@ router.get('/health-check', async (req, res) => {
  *          "500":
  *              description: "Internal Server Error: Cannot response the request."
  */
-
 router.post(constants.SONG_URL, async (req, res) => {
   Logger.request("Crear nueva cancion.");
   await SongService.newSong(req, res);
@@ -182,6 +181,63 @@ router.post(constants.FAV_SONG, async (req, res) => {
   await SongService.favSong(req, res);
 });
 
+/**
+ * @swagger
+ * /unfavsong:
+ *    post:
+ *      tags: [Song]
+ *      summary: Remove song from favorites.
+ *      description: "Remove song to favorites."
+ *      parameters:
+ *         - name: "userId"
+ *           in: body
+ *           description: "User id"
+ *           schema:
+ *              type: string
+ *         - name: "songId"
+ *           in: body
+ *           description: "Song id."
+ *           schema:
+ *              type: string
+ *      responses:
+ *          "200":
+ *              description: "Song removed from favorites."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.post(constants.UNFAV_SONG, async (req, res) => {
+  Logger.request("Quitar una canción a favoritos.");
+  await SongService.unfavSong(req, res);
+});
+
+/**
+ * @swagger
+ * /checkfav:
+ *    get:
+ *      tags: [Song]
+ *      summary: Check if song is in favorites.
+ *      description: "Remove song to favorites."
+ *      parameters:
+ *         - name: "userId"
+ *           in: query
+ *           description: "User id"
+ *           schema:
+ *              type: string
+ *         - name: "songId"
+ *           in: query
+ *           description: "Song id."
+ *           schema:
+ *              type: string
+ *      responses:
+ *          "200":
+ *              description: "Song removed from favorites."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.get(constants.CHECK_FAV_SONG, async (req, res) => {
+  Logger.request("Chequear si está en favoritos.");
+  await SongService.checkFavSong(req, res);
+});
 
 /**
  * @swagger
@@ -217,6 +273,32 @@ router.get(constants.FAVORITE_SONGS, async (req, res) => {
  * /songs/{id}:
  *    get:
  *      tags: [Song]
+ *      summary: Get favorite songs.
+ *      description: "Get favorite songs of the user with the given id."
+ *      parameters:
+ *         - name: "id"
+ *           in: path
+ *           required: true
+ *           description: "Id of the user"
+ *           schema:
+ *              type: string
+ *           example: 1
+ *      responses:
+ *          "200":
+ *              description: "returns songs."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.get(constants.FAVORITE_SONGS + "/:id", async (req, res) => {
+  Logger.info("Request a " + constants.FAVORITE_SONGS);
+  await SongService.getFavoriteSongs(req, res);
+});
+
+/**
+ * @swagger
+ * /songs/{id}:
+ *    get:
+ *      tags: [Song]
  *      summary: Get Song.
  *      description: "Get song with id."
  *      parameters:
@@ -237,11 +319,6 @@ router.get(constants.FAVORITE_SONGS, async (req, res) => {
  *          "500":
  *              description: "Internal Server Error: Cannot response the request"
  */
-router.get(constants.FAVORITE_SONGS + "/:id", async (req, res) => {
-  Logger.info("Request a " + constants.FAVORITE_SONGS);
-  await SongService.getFavoriteSongs(req, res);
-});
-
 router.get(constants.SONG_URL + "/:id", async (req, res) => {
     Logger.request("Obtener cancion.");
     await SongService.getSong(req, res);
@@ -529,5 +606,68 @@ router.get(`${constants.PLAYLIST_URL}/:id`, async (req, res) => {
   Logger.request('Obtener playlist.')
   await PlaylistService.getPlaylist(req, res);
 })
+
+/**
+ * @swagger
+ * /content:
+ *    get:
+ *      tags: [Content]
+ *      summary: Get content.
+ *      description: "Get a list of songs, albums and playlists."
+ *      responses:
+ *          "200":
+ *              description: "returns all songs content."
+ *          "500":
+ *              description: "Internal Server Error: Cannot answer the request."
+ */
+router.get(constants.CONTENT_URL, async (req,
+                                         res) => {
+  Logger.request("Obtener contenido.");
+
+  await ContentManagementService.getContent(req,
+                                            res);
+});
+
+/**
+ * @swagger
+ * /disablecontent:
+ *    post:
+ *      tags: [Content]
+ *      summary: Disable content.
+ *      description: "Disable song, album or playlist."
+ *      responses:
+ *          "200":
+ *              description: "Content disabled."
+ *          "500":
+ *              description: "Internal Server Error: Cannot answer the request."
+ */
+router.post(constants.DISABLE_CONTENT_URL, async (req,
+                                                 res) => {
+  Logger.request("Deshabilitar contenido.");
+
+  await ContentManagementService.disableContent(req,
+                                                res);
+});
+
+/**
+ * @swagger
+ * /enablecontent:
+ *    post:
+ *      tags: [Content]
+ *      summary: Enable content.
+ *      description: "Disable song, album or playlist."
+ *      responses:
+ *          "200":
+ *              description: "Content enabled."
+ *          "500":
+ *              description: "Internal Server Error: Cannot answer the request."
+ */
+router.post(constants.ENABLE_CONTENT_URL, async (req,
+                                                 res) => {
+  Logger.request("Habilitar contenido.");
+
+  await ContentManagementService.enableContent(req,
+                                               res);
+});
 
 module.exports = router;

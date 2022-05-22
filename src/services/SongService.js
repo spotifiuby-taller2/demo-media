@@ -38,6 +38,31 @@ async function newSong(req, res) {
   utils.setBodyResponse(saved, 200, res);
 }
 
+async function findSongs(where) {
+  const songs = await Song.findAll({
+        where: where
+      }
+  ).catch(error => {
+    throw utils.newError(500, 'Error al realizar la consulta de canciones');
+  });
+
+  return songs;
+}
+
+async function changeSongStatus(songId,
+                                isBlocked) {
+  await Song.update( {
+        isBlocked: isBlocked
+      },
+      {
+        where: {
+        id: songId
+      } })
+      .catch(error => {
+        throw utils.newError(500, 'Error al cambiar el estado de la canción.');
+     });
+}
+
 async function getSongs(req, res) {
   Logger.info("Obteniendo las canciones")
   const {title, artist, genre, subscription} = req.query;
@@ -49,14 +74,14 @@ async function getSongs(req, res) {
   if (genre !== undefined) where.genre = genre
   if (subscription !== undefined) where.subscription = subscription
 
-  const songs = await Song.findAll({
-      where: where,
-      attributes: ['id', 'title', 'description', 'artists', 'author', 'subscription', 'genre', 'link']
-    }
-  ).catch(error => {
+  let songs;
+
+  try {
+    songs = await findSongs(where);
+  } catch(e) {
     Logger.error(`No se pudieron obtener las canciones de la base de datos: ${error.toString()}`);
     utils.setErrorResponse("No se pudieron obtener las canciones", 500, res);
-  });
+  }
 
   if (songs === null || songs === undefined) {
     Logger.error("No se pudieron obtener las canciones de la base de datos");
@@ -123,7 +148,7 @@ async function favSong(req,
   });
 
   if (response === null || response.error !== undefined) {
-    Logger.error(`No se pudo obtener agregar la canción a favoritos: ${response.error}`);
+    Logger.error(`No se pudo agregar la canción a favoritos: ${response.error}`);
     return utils.setErrorResponse("No se pudo guardar la cancion", 500, res);
   }
 
@@ -133,10 +158,93 @@ async function favSong(req,
                         res);
 }
 
+async function unfavSong(req,
+                       res) {
+  const {userId,
+        songId} = req.body;
+
+  const response = await FavSongs.destroy({
+                          where: {
+                            userId: userId,
+                            songId: songId
+                            }
+                          }).catch(error => {
+                            return {
+                              error: error
+                            }
+                          });
+
+  if (response === null || response.error !== undefined) {
+    Logger.error(`No se pudo quitar la canción a favoritos: ${response.error}`);
+    return utils.setErrorResponse("No se pudo guardar la cancion", 500, res);
+  }
+
+  return utils.setBodyResponse({msg:
+            "Canción quitada a favoritos"},
+              200,
+              res);
+}
+
 async function getFavoriteSongs(req,
                                 res) {
   const userId = req.query
                     .userId;
+
+  const songs = [];
+
+  const response = await FavSongs.findAll( {
+    where: {
+      userId: userId
+    }
+  } ).catch(error => {
+    return {
+      error: error
+    }
+  });
+
+  if (response === null || response.error !== undefined) {
+    Logger.error(`No se pudo obtener las canciones favoritas: ${response.error}`);
+    return utils.setErrorResponse("No se pudieron traer las canciones.", 500, res);
+  }
+
+  const mapedSongs = response.map( async (element) => {
+    const pair = element.dataValues;
+
+    const song = await Song.findOne( {
+      where: {
+        id: pair.songId,
+        isBlocked: false
+      }
+    } ).then()
+        .catch(error => {
+          return {
+            error: error
+          }
+        } );
+
+    // Song is blocked
+    if (song === null) {
+      return {};
+    }
+
+    return song.dataValues;
+  } );
+
+  const solvedSongs = ( await Promise.all(mapedSongs) )
+                      .filter(song => song.id !== undefined);
+
+  return utils.setBodyResponse({songs: solvedSongs},
+      200,
+      res);
+}
+
+async function checkFavSong(req,
+                            res) {
+  const userId = req.query
+                    .userId;
+
+  const songId = req.query
+                    .songId;
 
   const songs = [];
 
@@ -174,9 +282,13 @@ async function getFavoriteSongs(req,
 
   const solvedSongs = await Promise.all(mapedSongs);
 
-  return utils.setBodyResponse({songs: solvedSongs},
-      200,
-      res);
+  const songIds = solvedSongs.map(song => song.id);
+
+  return utils.setBodyResponse( {
+        hasSong: songIds.includes( parseInt(songId)
+        ) },
+        200,
+        res);
 }
 
 module.exports = {
@@ -184,5 +296,9 @@ module.exports = {
   getSongs,
   getSong,
   favSong,
-  getFavoriteSongs
+  getFavoriteSongs,
+  unfavSong,
+  checkFavSong,
+  findSongs,
+  changeSongStatus
 };

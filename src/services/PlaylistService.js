@@ -27,6 +27,20 @@ const findPlaylist = async id => {
     })
 }
 
+async function changePlayList(playlistId,
+                              isBlocked) {
+  await Playlist.update( {
+        isBlocked: isBlocked
+      },
+      {
+        where: {
+          id: playlistId
+        } })
+      .catch(error => {
+        throw utils.newError(500, 'Error al cambiar el estado de la playlist.');
+      });
+}
+
 const newPlaylist = async (req, res) => {
   const {title, description, owner, isCollaborative, songs} = req.body;
 
@@ -92,12 +106,15 @@ const getPlaylists = async (req, res) => {
   const title = req.query.title;
   const owner = req.query.owner;
   let filters = {};
+  filters.isBlocked = false;
+
   if (title !== undefined) {
     filters.title = title;
   }
   if (owner !== undefined) {
     filters.owner = owner;
   }
+
   try {
     const playlists = await findPlaylists(filters)
     res.status(200).json(playlists);
@@ -110,4 +127,6 @@ module.exports = {
   getPlaylist,
   getPlaylists,
   newPlaylist,
+  findPlaylists,
+  changePlayList
 }
