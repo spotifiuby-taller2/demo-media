@@ -43,6 +43,8 @@ async function getSongs(req, res) {
   const {title, artist, genre, subscription} = req.query;
   const where = {};
   where.isBlocked = false;
+  const limit = Number(req.query.limit);
+  const queryLimit = req.query.limit ? {limit : limit}: {};
 
   if (title !== undefined) where.title = title
   if (artist !== undefined) where.artists = {[Op.contains]: [artist]}
@@ -51,6 +53,7 @@ async function getSongs(req, res) {
 
   const songs = await Song.findAll({
       where: where,
+      queryLimit,
       attributes: ['id', 'title', 'description', 'artists', 'author', 'subscription', 'genre', 'link']
     }
   ).catch(error => {
@@ -64,6 +67,7 @@ async function getSongs(req, res) {
   }
   if (res.statusCode >= 400) return;
   Logger.info(`Canciones obtenidas: ${songs.length}`)
+  
   utils.setBodyResponse(songs, 200, res);
 }
 
