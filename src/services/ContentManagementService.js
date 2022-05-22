@@ -1,13 +1,11 @@
 const Logger = require("./Logger");
 const utils = require("../others/utils");
-const {
-    findSongs} = require("./SongService");
-
-const {
-    findAlbums} = require("./AlbumService");
-
-const {
-    findPlaylists} = require("./PlaylistService");
+const {changePlayList} = require("./PlaylistService");
+const {changeAlbumStatus} = require("./AlbumService");
+const {changeSongStatus} = require("./SongService");
+const {findSongs} = require("./SongService");
+const {findAlbums} = require("./AlbumService");
+const {findPlaylists} = require("./PlaylistService");
 
 const getContent = async (req,
                           res) => {
@@ -26,7 +24,7 @@ const getContent = async (req,
                 name: song.title,
                 genre: song.genre,
                 type: "song",
-                active: song.isBlocked
+                blocked: song.isBlocked
             } } );
 
         albums = ( await findAlbums({}) ).map(album => {
@@ -35,7 +33,7 @@ const getContent = async (req,
                 name: album.title,
                 genre: album.genre,
                 type: "album",
-                active: album.isBlocked
+                blocked: album.isBlocked
             } } );
 
         playlists = ( await findPlaylists({}) ).map(playlist => {
@@ -44,7 +42,7 @@ const getContent = async (req,
                 name: playlist.title,
                 genre: playlist.genre,
                 type: "playlist",
-                active: playlist.isBlocked
+                blocked: playlist.isBlocked
             } } );
     } catch(e) {
        Logger.request("Error al obtener contenido.");
@@ -63,6 +61,57 @@ const getContent = async (req,
                                  res);
 }
 
+const handleContentChange = async (req,
+                                   res,
+                                   condition) => {
+    const type = req.body
+                    .contentType;
+
+    const contentId = req.body
+                         .contentId;
+
+    const disableFns = {
+        "song": changeSongStatus,
+        "album": changeAlbumStatus,
+        "playlist": changePlayList
+    };
+
+    try {
+        disableFns[type](contentId,
+                        condition);
+    } catch(e) {
+        Logger.request("Error al deshabilitar contenido.");
+
+        return utils.setErrorResponse(`Error al deshabilitar contenido`,
+            500,
+            res);
+    }
+
+    const response = {
+        ok: "ok"
+    };
+
+    return utils.setBodyResponse(response,
+                                200,
+                                res);
+}
+
+const disableContent = async (req,
+                              res) => {
+    return handleContentChange(req,
+                               res,
+                               true);
+}
+
+const enableContent = async (req,
+                             res) => {
+    return handleContentChange(req,
+                               res,
+                               false);
+}
+
 module.exports = {
-    getContent
+    getContent,
+    disableContent,
+    enableContent
 };

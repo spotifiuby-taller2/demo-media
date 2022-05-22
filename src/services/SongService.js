@@ -49,6 +49,20 @@ async function findSongs(where) {
   return songs;
 }
 
+async function changeSongStatus(songId,
+                                isBlocked) {
+  await Song.update( {
+        isBlocked: isBlocked
+      },
+      {
+        where: {
+        id: songId
+      } })
+      .catch(error => {
+        throw utils.newError(500, 'Error al cambiar el estado de la canción.');
+     });
+}
+
 async function getSongs(req, res) {
   Logger.info("Obteniendo las canciones")
   const {title, artist, genre, subscription} = req.query;
@@ -198,7 +212,8 @@ async function getFavoriteSongs(req,
 
     const song = await Song.findOne( {
       where: {
-        id: pair.songId
+        id: pair.songId,
+        isBlocked: false
       }
     } ).then()
         .catch(error => {
@@ -207,10 +222,16 @@ async function getFavoriteSongs(req,
           }
         } );
 
+    // Song is blocked
+    if (song === null) {
+      return {};
+    }
+
     return song.dataValues;
   } );
 
-  const solvedSongs = await Promise.all(mapedSongs);
+  const solvedSongs = ( await Promise.all(mapedSongs) )
+                      .filter(song => song.id !== undefined);
 
   return utils.setBodyResponse({songs: solvedSongs},
       200,
@@ -278,5 +299,6 @@ module.exports = {
   getFavoriteSongs,
   unfavSong,
   checkFavSong,
-  findSongs
+  findSongs,
+  changeSongStatus
 };

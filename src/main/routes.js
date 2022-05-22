@@ -618,11 +618,56 @@ router.get(`${constants.PLAYLIST_URL}/:id`, async (req, res) => {
  *          "200":
  *              description: "returns all songs content."
  *          "500":
- *              description: "Internal Server Error: Cannot response the request"
+ *              description: "Internal Server Error: Cannot answer the request."
  */
-router.get(constants.CONTENT_URL, async (req, res) => {
+router.get(constants.CONTENT_URL, async (req,
+                                         res) => {
   Logger.request("Obtener contenido.");
-  await ContentManagementService.getContent(req, res);
+
+  await ContentManagementService.getContent(req,
+                                            res);
+});
+
+/**
+ * @swagger
+ * /disablecontent:
+ *    post:
+ *      tags: [Content]
+ *      summary: Disable content.
+ *      description: "Disable song, album or playlist."
+ *      responses:
+ *          "200":
+ *              description: "Content disabled."
+ *          "500":
+ *              description: "Internal Server Error: Cannot answer the request."
+ */
+router.post(constants.DISABLE_CONTENT_URL, async (req,
+                                                 res) => {
+  Logger.request("Deshabilitar contenido.");
+
+  await ContentManagementService.disableContent(req,
+                                                res);
+});
+
+/**
+ * @swagger
+ * /enablecontent:
+ *    post:
+ *      tags: [Content]
+ *      summary: Enable content.
+ *      description: "Disable song, album or playlist."
+ *      responses:
+ *          "200":
+ *              description: "Content enabled."
+ *          "500":
+ *              description: "Internal Server Error: Cannot answer the request."
+ */
+router.post(constants.ENABLE_CONTENT_URL, async (req,
+                                                 res) => {
+  Logger.request("Habilitar contenido.");
+
+  await ContentManagementService.enableContent(req,
+                                               res);
 });
 
 module.exports = router;

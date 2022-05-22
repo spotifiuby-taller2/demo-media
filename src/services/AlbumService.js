@@ -48,6 +48,20 @@ const createAlbum = async (albumData) => {
   });
 }
 
+async function changeAlbumStatus(albumId,
+                                 isBlocked) {
+  await Album.update( {
+        isBlocked: isBlocked
+      },
+      {
+        where: {
+          id: albumId
+        } })
+      .catch(error => {
+        throw utils.newError(500, 'Error al cambiar el estado del album.');
+      });
+}
+
 const findSongs = async ids => {
   const savedSongs = await Song.findAll({
     attributes: ['id', 'title', 'description', 'artists', 'author', 'genre', 'subscription', 'link'], where: {id: ids},
@@ -122,5 +136,6 @@ module.exports = {
   getAlbum,
   getAlbums,
   findAlbums,
-  findSongs
+  findSongs,
+  changeAlbumStatus
 };

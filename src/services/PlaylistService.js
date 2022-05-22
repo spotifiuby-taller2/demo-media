@@ -27,6 +27,20 @@ const findPlaylist = async id => {
     })
 }
 
+async function changePlayList(playlistId,
+                              isBlocked) {
+  await Playlist.update( {
+        isBlocked: isBlocked
+      },
+      {
+        where: {
+          id: playlistId
+        } })
+      .catch(error => {
+        throw utils.newError(500, 'Error al cambiar el estado de la playlist.');
+      });
+}
+
 const newPlaylist = async (req, res) => {
   const {title, description, owner, isCollaborative, songs} = req.body;
 
@@ -113,5 +127,6 @@ module.exports = {
   getPlaylist,
   getPlaylists,
   newPlaylist,
-  findPlaylists
+  findPlaylists,
+  changePlayList
 }
