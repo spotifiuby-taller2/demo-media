@@ -2,6 +2,7 @@ const utils = require("../others/utils");
 const Logger = require("./Logger");
 const {Song, Album} = require("../data/Media");
 const {Op} = require("sequelize");
+const {FavAlbums} = require("../data/Media");
 
 const newAlbum = async (req, res) => {
   const {title, artists, genre, subscription, link, songs} = req.body;
@@ -131,11 +132,168 @@ const getAlbums = async (req, res) => {
   }
 }
 
+const favAlbum = async (req, res) => {
+    const {userId,
+           albumId} = req.body;
+
+    const response = await FavAlbums.create({
+      userId: userId,
+      albumId: albumId,
+    }).catch(error => {
+      return {
+        error: error
+      }
+    });
+
+    if (response === null || response.error !== undefined) {
+      Logger.error(`No se pudo agregar el album a favoritos: ${response.error}`);
+      return utils.setErrorResponse("No se pudo agregar el album a favoritos", 500, res);
+    }
+
+    return utils.setBodyResponse({ok:
+                                 "ok"},
+                                 200,
+                                 res);
+}
+
+async function unfavAlbum(req,
+                         res) {
+  const {userId,
+         albumId} = req.body;
+
+  const response = await FavAlbums.destroy({
+    where: {
+      userId: userId,
+      albumId: albumId
+    }
+  }).catch(error => {
+    return {
+      error: error
+    }
+  });
+
+  if (response === null || response.error !== undefined) {
+    Logger.error(`No se pudo quitar el album de favoritos: ${response.error}`);
+    return utils.setErrorResponse("No se pudo guardar el album", 500, res);
+  }
+
+  return utils.setBodyResponse({msg:
+            "Album quitado a favoritos"},
+      200,
+      res);
+}
+
+async function checkFavAlbum(req,
+                            res) {
+  const userId = req.query
+                    .userId;
+
+  const albumId = req.query
+                     .albumId;
+
+  const response = await FavAlbums.findAll( {
+    where: {
+      userId: userId
+    }
+  } ).catch(error => {
+    return {
+      error: error
+    }
+  });
+
+  if (response === null || response.error !== undefined) {
+    Logger.error(`No se pudieron obtener los albumes favoritos: ${response.error}`);
+    return utils.setErrorResponse("No se pudieron obtener los albumes favoritos.", 500, res);
+  }
+
+  const mapedAlbums = response.map( async (element) => {
+    const pair = element.dataValues;
+
+    const album = await Album.findOne( {
+      where: {
+        id: pair.albumId
+      }
+    } ).then()
+        .catch(error => {
+          return {
+            error: error
+          }
+        } );
+
+    return album.dataValues;
+  } );
+
+  const solvedAlbums = await Promise.all(mapedAlbums);
+
+  const songIds = solvedAlbums.map(album => album.id);
+
+  return utils.setBodyResponse( {
+        hasSong: songIds.includes( parseInt(albumId) ) },
+      200,
+      res);
+}
+
+
+async function getFavoriteAlbums(req,
+                                res) {
+  const userId = req.query
+                    .userId;
+
+  const response = await FavAlgums.findAll( {
+    where: {
+      userId: userId
+    }
+  } ).catch(error => {
+    return {
+      error: error
+    }
+  });
+
+  if (response === null || response.error !== undefined) {
+    Logger.error(`No se pudo obtener los albumes favoritas: ${response.error}`);
+    return utils.setErrorResponse("No se pudieron traer los albumes.", 500, res);
+  }
+
+  const mapedAlbums = response.map( async (element) => {
+    const pair = element.dataValues;
+
+    const album = await Album.findOne( {
+      where: {
+        id: pair.albumId,
+        isBlocked: false
+      }
+    } ).then()
+        .catch(error => {
+          return {
+            error: error
+          }
+        } );
+
+    // Album is blocked
+    if (album === null) {
+      return {};
+    }
+
+    return album.dataValues;
+  } );
+
+  const solvedAlbums = ( await Promise.all(mapedAlbums) )
+                      .filter(album => album.id !== undefined);
+
+  return utils.setBodyResponse({albums: solvedAlbums},
+      200,
+      res);
+}
+
+
 module.exports = {
   newAlbum,
   getAlbum,
   getAlbums,
   findAlbums,
   findSongs,
-  changeAlbumStatus
+  changeAlbumStatus,
+  favAlbum,
+  unfavAlbum,
+  checkFavAlbum
 };

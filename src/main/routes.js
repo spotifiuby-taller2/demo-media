@@ -97,6 +97,38 @@ router.post(constants.SONG_URL, async (req, res) => {
   await SongService.newSong(req, res);
 });
 
+
+
+/**
+ * @swagger
+ * /songs/{id}:
+ *    get:
+ *      tags: [Song]
+ *      summary: Get Song.
+ *      description: "Get song with id."
+ *      parameters:
+ *         - name: "id"
+ *           in: path
+ *           required: true
+ *           description: "Id of song"
+ *           schema:
+ *              type: string
+ *           example: 1
+ *      responses:
+ *          "200":
+ *              description: "returns song with the id."
+ *          "400":
+ *               description: "Could not get song with this id"
+ *          "404":
+ *               description: "Not found."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.get(constants.SONG_URL + "/:id", async (req, res) => {
+  Logger.request("Obtener cancion.");
+  await SongService.getSong(req, res);
+});
+
 /**
  * @swagger
  * /songs:
@@ -262,15 +294,17 @@ router.get(constants.CHECK_FAV_SONG, async (req, res) => {
  *          "500":
  *              description: "Internal Server Error: Cannot response the request"
  */
+/*
 router.get(constants.FAVORITE_SONGS, async (req, res) => {
   Logger.request("Ver favoritos.");
 
   await SongService.getFavoriteSongs(req, res);
 });
+*/
 
 /**
  * @swagger
- * /songs/{id}:
+ * /favoritealbums:
  *    get:
  *      tags: [Song]
  *      summary: Get favorite songs.
@@ -294,34 +328,119 @@ router.get(constants.FAVORITE_SONGS + "/:id", async (req, res) => {
   await SongService.getFavoriteSongs(req, res);
 });
 
+
+
 /**
  * @swagger
- * /songs/{id}:
+ * /favalbum:
+ *    post:
+ *      tags: [Album]
+ *      summary: Add album to favorites.
+ *      description: "Add album to favorites."
+ *      parameters:
+ *         - name: "userId"
+ *           in: body
+ *           description: "User id"
+ *           schema:
+ *              type: string
+ *         - name: "songId"
+ *           in: body
+ *           description: "Song id."
+ *           schema:
+ *              type: string
+ *      responses:
+ *          "200":
+ *              description: "Album added to favorites."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.post(constants.FAV_ALBUM, async (req, res) => {
+  Logger.request("Agregar album a favoritos.");
+  await AlbumService.favAlbum(req, res);
+});
+
+/**
+ * @swagger
+ * /unfavalbum:
+ *    post:
+ *      tags: [Album]
+ *      summary: Remove album from favorites.
+ *      description: "Remove album from favorites."
+ *      parameters:
+ *         - name: "userId"
+ *           in: body
+ *           description: "User id"
+ *           schema:
+ *              type: string
+ *         - name: "songId"
+ *           in: body
+ *           description: "Song id."
+ *           schema:
+ *              type: string
+ *      responses:
+ *          "200":
+ *              description: "Song removed from favorites."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.post(constants.UNFAV_ALBUM, async (req, res) => {
+  Logger.request("Quitar un album de favoritos.");
+  await AlbumService.unfavAlbum(req, res);
+});
+
+/**
+ * @swagger
+ * /checkfavalbum:
  *    get:
- *      tags: [Song]
- *      summary: Get Song.
- *      description: "Get song with id."
+ *      tags: [Album]
+ *      summary: Check if album is in favorites.
+ *      description: Check if album is in favorites.
+ *      parameters:
+ *         - name: "userId"
+ *           in: query
+ *           description: "User id"
+ *           schema:
+ *              type: string
+ *         - name: "songId"
+ *           in: query
+ *           description: "Song id."
+ *           schema:
+ *              type: string
+ *      responses:
+ *          "200":
+ *              description: "Returns if the album is or not in favorites for the user."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.get(constants.CHECK_FAV_ALBUM, async (req, res) => {
+  Logger.request("Chequear si está en favoritos.");
+  await AlbumService.checkFavAlbum(req, res);
+});
+
+/**
+ * @swagger
+ * /favoritealbums:
+ *    get:
+ *      tags: [Album]
+ *      summary: Get favorite albums.
+ *      description: "Get favorite albums of the user with the given id."
  *      parameters:
  *         - name: "id"
  *           in: path
  *           required: true
- *           description: "Id of song"
+ *           description: "Id of the user"
  *           schema:
  *              type: string
  *           example: 1
  *      responses:
  *          "200":
- *              description: "returns song with the id."
- *          "400":
- *               description: "Could not get song with this id"
- *          "404":
- *               description: "Not found."
+ *              description: "returns albums."
  *          "500":
  *              description: "Internal Server Error: Cannot response the request"
  */
-router.get(constants.SONG_URL + "/:id", async (req, res) => {
-    Logger.request("Obtener cancion.");
-    await SongService.getSong(req, res);
+router.get(constants.FAVORITE_ALBUMS + "/:id", async (req, res) => {
+  Logger.info("Request a " + constants.FAVORITE_ALBUMS);
+  await AlbumService.getFavoriteAlbums(req, res);
 });
 
 /**

@@ -42,6 +42,10 @@ const FAVORITE_SONGS = "/favoritesongs";
 const FAV_SONG = "/favsong";
 const UNFAV_SONG = "/unfavsong";
 const CHECK_FAV_SONG = "/checkfav";
+const FAV_ALBUM = "/favalbum";
+const UNFAV_ALBUM = "/unfavalbum";
+const CHECK_FAV_ALBUM = "/checkfavalbum";
+const FAVORITE_ALBUMS = "/favoritealbums";
 
 const CONTENT_URL = "/content";
 const ENABLE_CONTENT_URL = "/enablecontent";
@@ -138,5 +142,9 @@ module.exports = {
   CHECK_FAV_SONG,
   CONTENT_URL,
   ENABLE_CONTENT_URL,
-  DISABLE_CONTENT_URL
+  DISABLE_CONTENT_URL,
+  FAV_ALBUM,
+  UNFAV_ALBUM,
+  CHECK_FAV_ALBUM,
+  FAVORITE_ALBUMS
 }

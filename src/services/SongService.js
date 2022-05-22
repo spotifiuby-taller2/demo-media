@@ -246,8 +246,6 @@ async function checkFavSong(req,
   const songId = req.query
                     .songId;
 
-  const songs = [];
-
   const response = await FavSongs.findAll( {
     where: {
       userId: userId

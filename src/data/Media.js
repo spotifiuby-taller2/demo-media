@@ -235,6 +235,27 @@ const FavSongs = database.define('song_favs', {
     },
 });
 
+const FavAlbums = database.define('album_favs', {
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    albumId: {
+        type: Sequelize.INTEGER,
+    },
+    userId: {
+        type: Sequelize.STRING(constants.MAX_STR_LEN),
+    },
+    createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false
+    },
+    updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false
+    },
+});
 
 Playlist.belongsToMany(Song, {through: PlaylistSong});
 Song.belongsToMany(Playlist, {through: PlaylistSong});
@@ -245,4 +266,6 @@ module.exports = {
     Playlist,
     AlbumSong,
     PlaylistSong,
-    FavSongs};
+    FavSongs,
+    FavAlbums
+};

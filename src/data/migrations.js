@@ -29,8 +29,6 @@ async function runMigrations() {
               defaultValue: false
        }).catch(error => console.log(error.toString()));
 
-    await queryInterface.dropTable('song_favs');
-
        await queryInterface.createTable('song_favs', {
                id: {
                    type: Sequelize.INTEGER,
@@ -53,7 +51,29 @@ async function runMigrations() {
                },
        } ).catch(error => console.log(error.toString()));
 
-
+    await queryInterface.createTable('album_favs', {
+        id: {
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        songId: {
+            type: Sequelize.INTEGER,
+        },
+        userId: {
+            type: Sequelize.STRING(constants.MAX_STR_LEN),
+        },
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: false
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: false
+        },
+    } ).catch(error => console.log(error.toString()));
 }
 
-module.exports = {runMigrations}
+module.exports = {
+    runMigrations
+}
