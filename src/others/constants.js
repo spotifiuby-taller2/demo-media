@@ -43,6 +43,10 @@ const FAV_SONG = "/favsong";
 const UNFAV_SONG = "/unfavsong";
 const CHECK_FAV_SONG = "/checkfav";
 
+const CONTENT_URL = "/content";
+const ENABLE_CONTENT_URL = "/enablecontent";
+const DISABLE_CONTENT_URL = "/disablecontent";
+
 /* ====== Production vs Development config ====== */
 const isDevelopment = process.env.PRODUCTION === undefined;
 let databaseUrl;
@@ -131,5 +135,8 @@ module.exports = {
   FAVORITE_SONGS,
   FAV_SONG,
   UNFAV_SONG,
-  CHECK_FAV_SONG
+  CHECK_FAV_SONG,
+  CONTENT_URL,
+  ENABLE_CONTENT_URL,
+  DISABLE_CONTENT_URL
 }

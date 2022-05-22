@@ -92,12 +92,15 @@ const getPlaylists = async (req, res) => {
   const title = req.query.title;
   const owner = req.query.owner;
   let filters = {};
+  filters.isBlocked = false;
+
   if (title !== undefined) {
     filters.title = title;
   }
   if (owner !== undefined) {
     filters.owner = owner;
   }
+
   try {
     const playlists = await findPlaylists(filters)
     res.status(200).json(playlists);
@@ -110,4 +113,5 @@ module.exports = {
   getPlaylist,
   getPlaylists,
   newPlaylist,
+  findPlaylists
 }

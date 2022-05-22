@@ -3,6 +3,7 @@ const router = express.Router()
 const constants = require('../others/constants');
 const SongService = require('../services/SongService');
 const AlbumService = require('../services/AlbumService');
+const ContentManagementService = require('../services/ContentManagementService');
 const PlaylistService = require('../services/PlaylistService');
 const Logger = require("../services/Logger");
 
@@ -605,5 +606,23 @@ router.get(`${constants.PLAYLIST_URL}/:id`, async (req, res) => {
   Logger.request('Obtener playlist.')
   await PlaylistService.getPlaylist(req, res);
 })
+
+/**
+ * @swagger
+ * /content:
+ *    get:
+ *      tags: [Content]
+ *      summary: Get content.
+ *      description: "Get a list of songs, albums and playlists."
+ *      responses:
+ *          "200":
+ *              description: "returns all songs content."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.get(constants.CONTENT_URL, async (req, res) => {
+  Logger.request("Obtener contenido.");
+  await ContentManagementService.getContent(req, res);
+});
 
 module.exports = router;

@@ -38,6 +38,17 @@ async function newSong(req, res) {
   utils.setBodyResponse(saved, 200, res);
 }
 
+async function findSongs(where) {
+  const songs = await Song.findAll({
+        where: where
+      }
+  ).catch(error => {
+    throw utils.newError(500, 'Error al realizar la consulta de canciones');
+  });
+
+  return songs;
+}
+
 async function getSongs(req, res) {
   Logger.info("Obteniendo las canciones")
   const {title, artist, genre, subscription} = req.query;
@@ -49,14 +60,14 @@ async function getSongs(req, res) {
   if (genre !== undefined) where.genre = genre
   if (subscription !== undefined) where.subscription = subscription
 
-  const songs = await Song.findAll({
-      where: where,
-      attributes: ['id', 'title', 'description', 'artists', 'author', 'subscription', 'genre', 'link']
-    }
-  ).catch(error => {
+  let songs;
+
+  try {
+    songs = await findSongs(where);
+  } catch(e) {
     Logger.error(`No se pudieron obtener las canciones de la base de datos: ${error.toString()}`);
     utils.setErrorResponse("No se pudieron obtener las canciones", 500, res);
-  });
+  }
 
   if (songs === null || songs === undefined) {
     Logger.error("No se pudieron obtener las canciones de la base de datos");
@@ -266,5 +277,6 @@ module.exports = {
   favSong,
   getFavoriteSongs,
   unfavSong,
-  checkFavSong
+  checkFavSong,
+  findSongs
 };
