@@ -239,7 +239,7 @@ async function getFavoriteAlbums(req,
   const userId = req.query
                     .userId;
 
-  const response = await FavAlgums.findAll( {
+  const response = await FavAlbums.findAll( {
     where: {
       userId: userId
     }
@@ -295,5 +295,6 @@ module.exports = {
   changeAlbumStatus,
   favAlbum,
   unfavAlbum,
-  checkFavAlbum
+  checkFavAlbum,
+  getFavoriteAlbums
 };

@@ -294,37 +294,9 @@ router.get(constants.CHECK_FAV_SONG, async (req, res) => {
  *          "500":
  *              description: "Internal Server Error: Cannot response the request"
  */
-/*
 router.get(constants.FAVORITE_SONGS, async (req, res) => {
   Logger.request("Ver favoritos.");
 
-  await SongService.getFavoriteSongs(req, res);
-});
-*/
-
-/**
- * @swagger
- * /favoritealbums:
- *    get:
- *      tags: [Song]
- *      summary: Get favorite songs.
- *      description: "Get favorite songs of the user with the given id."
- *      parameters:
- *         - name: "id"
- *           in: path
- *           required: true
- *           description: "Id of the user"
- *           schema:
- *              type: string
- *           example: 1
- *      responses:
- *          "200":
- *              description: "returns songs."
- *          "500":
- *              description: "Internal Server Error: Cannot response the request"
- */
-router.get(constants.FAVORITE_SONGS + "/:id", async (req, res) => {
-  Logger.info("Request a " + constants.FAVORITE_SONGS);
   await SongService.getFavoriteSongs(req, res);
 });
 
@@ -438,7 +410,7 @@ router.get(constants.CHECK_FAV_ALBUM, async (req, res) => {
  *          "500":
  *              description: "Internal Server Error: Cannot response the request"
  */
-router.get(constants.FAVORITE_ALBUMS + "/:id", async (req, res) => {
+router.get(constants.FAVORITE_ALBUMS , async (req, res) => {
   Logger.info("Request a " + constants.FAVORITE_ALBUMS);
   await AlbumService.getFavoriteAlbums(req, res);
 });
