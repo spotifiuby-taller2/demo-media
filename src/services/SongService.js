@@ -38,9 +38,11 @@ async function newSong(req, res) {
   utils.setBodyResponse(saved, 200, res);
 }
 
-async function findSongs(where) {
+async function findSongs(queryLimit,
+                         where) {
   const songs = await Song.findAll({
-        where: where
+        where: where,
+        limit: queryLimit
       }
   ).catch(error => {
     throw utils.newError(500, 'Error al realizar la consulta de canciones');
@@ -66,7 +68,12 @@ async function changeSongStatus(songId,
 async function getSongs(req, res) {
   Logger.info("Obteniendo las canciones")
   const {title, artist, genre, subscription} = req.query;
+
+  const queryLimit = req.query.limit ? Number(req.query.limit)
+                                     : constants.MAX_LIMIT;
+
   const where = {};
+
   where.isBlocked = false;
 
   if (title !== undefined) where.title = title
@@ -77,7 +84,8 @@ async function getSongs(req, res) {
   let songs;
 
   try {
-    songs = await findSongs(where);
+    songs = await findSongs(queryLimit,
+                            where);
   } catch(e) {
     Logger.error(`No se pudieron obtener las canciones de la base de datos: ${error.toString()}`);
     utils.setErrorResponse("No se pudieron obtener las canciones", 500, res);
@@ -190,13 +198,15 @@ async function getFavoriteSongs(req,
   const userId = req.query
                     .userId;
 
-  const songs = [];
+  const queryLimit = req.query.limit ? Number(req.query.limit)
+      : constants.MAX_LIMIT;
 
   const response = await FavSongs.findAll( {
     where: {
-      userId: userId
-    }
-  } ).catch(error => {
+      userId: userId,
+    },
+    limit: queryLimit
+    }).catch(error => {
     return {
       error: error
     }
@@ -233,7 +243,7 @@ async function getFavoriteSongs(req,
   const solvedSongs = ( await Promise.all(mapedSongs) )
                       .filter(song => song.id !== undefined);
 
-  return utils.setBodyResponse({songs: solvedSongs},
+  return utils.setBodyResponse(solvedSongs,
       200,
       res);
 }

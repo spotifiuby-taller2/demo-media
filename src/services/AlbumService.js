@@ -1,5 +1,6 @@
 const utils = require("../others/utils");
 const Logger = require("./Logger");
+const {MAX_LIMIT} = require("../others/constants");
 const {Song, Album} = require("../data/Media");
 const {Op} = require("sequelize");
 const {FavAlbums} = require("../data/Media");
@@ -103,10 +104,12 @@ const findAlbum = async id => {
     })
 }
 
-const findAlbums = (filters) => {
+const findAlbums = (queryLimit,
+                    filters) => {
   return Album.findAll({
     where: filters,
-    include: {model: Song, through: {attributes: []}}
+    include: {model: Song, through: {attributes: []}},
+    limit: queryLimit
   }).catch(error => {
     Logger.error(`Error al obtener albums de la base de datos: ${error.toString()}`);
     throw utils.newError(500, 'Error al obtener las albums');
@@ -115,7 +118,12 @@ const findAlbums = (filters) => {
 
 const getAlbums = async (req, res) => {
   const {title, artist, genre, subscription} = req.query;
+
+  const queryLimit = req.query.limit ? Number(req.query.limit)
+      : MAX_LIMIT;
+
   const where = {};
+
   where.isBlocked = false;
 
   if (title !== undefined) where.title = title
@@ -124,7 +132,8 @@ const getAlbums = async (req, res) => {
   if (subscription !== undefined) where.subscription = subscription
 
   try {
-    const albums = await findAlbums(where)
+    const albums = await findAlbums(queryLimit,
+                                    where);
     Logger.info(`Albumes obtenidos: ${albums.length}`);
     res.status(200).json(albums);
   } catch (error) {
@@ -239,10 +248,14 @@ async function getFavoriteAlbums(req,
   const userId = req.query
                     .userId;
 
+  const queryLimit = req.query.limit ? Number(req.query.limit)
+      : MAX_LIMIT;
+
   const response = await FavAlbums.findAll( {
     where: {
       userId: userId
-    }
+    },
+    limit: queryLimit
   } ).catch(error => {
     return {
       error: error
@@ -261,7 +274,8 @@ async function getFavoriteAlbums(req,
       where: {
         id: pair.albumId,
         isBlocked: false
-      }
+      },
+      include: {model: Song, through: {attributes: []}}
     } ).then()
         .catch(error => {
           return {
@@ -274,13 +288,13 @@ async function getFavoriteAlbums(req,
       return {};
     }
 
-    return album.dataValues;
+    return album;
   } );
 
   const solvedAlbums = ( await Promise.all(mapedAlbums) )
                       .filter(album => album.id !== undefined);
 
-  return utils.setBodyResponse({albums: solvedAlbums},
+  return utils.setBodyResponse(solvedAlbums,
       200,
       res);
 }
