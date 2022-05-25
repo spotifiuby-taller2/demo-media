@@ -6,6 +6,7 @@ const {changeSongStatus} = require("./SongService");
 const {findSongs} = require("./SongService");
 const {findAlbums} = require("./AlbumService");
 const {findPlaylists} = require("./PlaylistService");
+const constants = require('../others/constants');
 
 const getContent = async (req,
                           res) => {
@@ -18,16 +19,20 @@ const getContent = async (req,
    let content = [];
 
    try {
-        songs = ( await findSongs({}) ).map(song => {
+       const response =  await findSongs(constants.MAX_LIMIT,
+                                         {} );
+
+        songs = response.map(song => {
             return {
                 id: "song_" + song.id,
                 name: song.title,
                 genre: song.genre,
                 type: "song",
-                blocked: song.isBlocked
+                blocked:     song.isBlocked
             } } );
 
-        albums = ( await findAlbums({}) ).map(album => {
+        albums = ( await findAlbums(constants.MAX_LIMIT,
+                                    {} ) ).map(album => {
             return {
                 id: "album_" + album.id,
                 name: album.title,
@@ -36,7 +41,8 @@ const getContent = async (req,
                 blocked: album.isBlocked
             } } );
 
-        playlists = ( await findPlaylists({}) ).map(playlist => {
+        playlists = ( await findPlaylists(constants.MAX_LIMIT,
+                                          {} ) ).map(playlist => {
             return {
                 id: "playlist_" + playlist.id,
                 name: playlist.title,
