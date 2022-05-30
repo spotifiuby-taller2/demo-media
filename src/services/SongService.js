@@ -8,7 +8,7 @@ const {FavSongs} = require("../data/Media");
 
 async function newSong(req, res) {
   Logger.info("Creando nueva cancion.");
-  const {title, description, artists, author, subscription, genre, link} = req.body;
+  const {title, description, artists, author, subscription, genre, link, artwork} = req.body;
   if (utils.areAnyUndefined([title, artists, link])) {
     Logger.error(`Error: title, artists y link son obligatorios.`);
     utils.setErrorResponse(`Error: title, artists y link son obligatorios.`, 400, res);
@@ -22,7 +22,8 @@ async function newSong(req, res) {
       author: author,
       subscription: subscription,
       genre: genre,
-      link: link
+      link: link,
+      artwork: artwork,
     }
   ).catch(error => {
     Logger.error(`Error al intentar guardar en la base de datos: ${error.toString()}`);
@@ -109,7 +110,7 @@ async function getSong(req, res) {
           {id: id},
           {isBlocked: false}
       ] },
-    attributes: ['id', 'title', 'description', 'artists', 'author', 'subscription', 'genre', 'link']
+    attributes: ['id', 'title', 'description', 'artists', 'author', 'subscription', 'genre', 'link', 'artwork']
   } ).catch(error => {
     Logger.error(`No se pudo obtener la cancion de la base de datos: ${error.toString()}`);
     utils.setErrorResponse("No se pudo obtener la cancion", 500, res);
