@@ -72,6 +72,18 @@ async function runMigrations() {
             allowNull: false
         },
     } ).catch(error => console.log(error.toString()));
+
+  await queryInterface.addColumn(Song.tableName, 'artwork',{
+    type: Sequelize.STRING(constants.MAX_STR_FIREBASE_LINK),
+    allowNull: true,
+    unique: false,
+  }).catch(e => console.log(e.toString()));
+
+  await queryInterface.addColumn(Playlist.tableName, 'artwork',{
+    type: Sequelize.STRING(constants.MAX_STR_FIREBASE_LINK),
+    allowNull: true,
+    unique: false,
+  }).catch(e => console.log(e.toString()));
 }
 
 module.exports = {

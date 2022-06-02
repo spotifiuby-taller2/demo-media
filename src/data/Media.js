@@ -57,6 +57,11 @@ const Song = database.define('song',
           allowNull: false,
           defaultValue: false
       },
+    artwork: {
+      type: Sequelize.STRING(constants.MAX_STR_FIREBASE_LINK),
+      allowNull: true,
+      unique: false,
+    },
   },
   {
     indexes: [
@@ -183,6 +188,11 @@ const Playlist = database.define('playlist',
           type: Sequelize.BOOLEAN,
           allowNull: false,
           defaultValue: false
+    },
+    artwork: {
+      type: Sequelize.STRING(constants.MAX_STR_FIREBASE_LINK),
+      allowNull: true,
+      unique: false,
     },
   },
   {
