@@ -66,7 +66,9 @@ async function changeAlbumStatus(albumId,
 
 const findSongs = async ids => {
   const savedSongs = await Song.findAll({
-    attributes: ['id', 'title', 'description', 'artists', 'author', 'genre', 'subscription', 'link'], where: {id: ids},
+    attributes: ['id', 'title', 'description', 'artists', 'author', 'genre', 'subscription', 'link'], 
+    where: {id: ids},
+    order: [['createdAt', 'ASC']],
   }).catch(error => {
     Logger.error(`Error al obtener canciones de la base de datos: ${error.toString()}`);
     throw utils.newError(500, 'Error al obtener las canciones');
@@ -109,7 +111,8 @@ const findAlbums = (queryLimit,
   return Album.findAll({
     where: filters,
     include: {model: Song, through: {attributes: []}},
-    limit: queryLimit
+    limit: queryLimit,
+    order: [['createdAt', 'ASC']],
   }).catch(error => {
     Logger.error(`Error al obtener albums de la base de datos: ${error.toString()}`);
     throw utils.newError(500, 'Error al obtener las albums');
@@ -203,7 +206,8 @@ async function checkFavAlbum(req,
   const response = await FavAlbums.findAll( {
     where: {
       userId: userId
-    }
+    },
+    order: [['createdAt', 'ASC']],
   } ).catch(error => {
     return {
       error: error
@@ -255,7 +259,8 @@ async function getFavoriteAlbums(req,
     where: {
       userId: userId
     },
-    limit: queryLimit
+    limit: queryLimit,
+    order: [['createdAt', 'ASC']],
   } ).catch(error => {
     return {
       error: error

@@ -42,7 +42,8 @@ async function findSongs(queryLimit,
                          where) {
   const songs = await Song.findAll({
         where: where,
-        limit: queryLimit
+        limit: queryLimit,
+        order: [['createdAt', 'ASC']],
       }
   ).catch(error => {
     throw utils.newError(500, 'Error al realizar la consulta de canciones');
@@ -205,7 +206,8 @@ async function getFavoriteSongs(req,
     where: {
       userId: userId,
     },
-    limit: queryLimit
+    limit: queryLimit,
+    order: [['createdAt', 'ASC']],
     }).catch(error => {
     return {
       error: error
@@ -259,7 +261,8 @@ async function checkFavSong(req,
   const response = await FavSongs.findAll( {
     where: {
       userId: userId
-    }
+    },
+    order: [['createdAt', 'ASC']],
   } ).catch(error => {
     return {
       error: error
