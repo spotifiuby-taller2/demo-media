@@ -26,7 +26,7 @@ class App {
       force: constants.RESET_DATABASE
     });
 
-    if (constants.isDevelopment) {
+    if (!constants.isDevelopment) {
       await runMigrations();
     }
 
