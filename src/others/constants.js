@@ -36,6 +36,7 @@ const SONG_URL = "/songs";
 const ALBUM_URL = "/albums";
 const PLAYLIST_URL = "/playlists";
 
+const CHECK_URL = "/check";
 const PARSE_USERS_URL= "/parse";
 const FAVORITE_SONGS = "/favoritesongs";
 const FAV_SONG = "/favsong";
@@ -131,5 +132,6 @@ module.exports = {
   ENABLE_CONTENT_URL,
   DISABLE_CONTENT_URL,
   FAV_ALBUM,
-  UNFAV_ALBUM, CHECK_FAV_ALBUM, FAVORITE_ALBUMS, MAX_LIMIT
+  UNFAV_ALBUM, CHECK_FAV_ALBUM, FAVORITE_ALBUMS, MAX_LIMIT,
+  CHECK_URL
 }
