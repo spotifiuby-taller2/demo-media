@@ -42,7 +42,7 @@ async function changePlayList(playlistId,
 }
 
 const newPlaylist = async (req, res) => {
-  const {title, description, owner, isCollaborative, songs} = req.body;
+  const {title, description, owner, isCollaborative, songs, artwork} = req.body;
 
   if (utils.areAnyUndefined([title, owner, songs, isCollaborative])) {
     Logger.error('Error: title, owner, isCollaborative y songs son obligatorios.');
@@ -51,7 +51,7 @@ const newPlaylist = async (req, res) => {
   }
 
   try {
-    const playlist = await createPlaylist({title, description, owner, isCollaborative, songs});
+    const playlist = await createPlaylist({title, description, owner, isCollaborative, songs, artwork});
     res.status(200).json(playlist);
   } catch (error) {
     res.status(error.status).json(error.body);
@@ -67,6 +67,7 @@ const createPlaylist = async (playlistData) => {
       description: playlistData.description,
       owner: playlistData.owner,
       isCollaborative: playlistData.isCollaborative || false,
+      artwork: playlistData.artwork,
     }
   ).then(async playlist => {
     await playlist.addSongs(songs);
@@ -79,7 +80,7 @@ const createPlaylist = async (playlistData) => {
 
 const findSongs = async ids => {
   const savedSongs = await Song.findAll({
-    attributes: ['id', 'title', 'description', 'artists', 'author', 'genre', 'subscription', 'link'], where: {id: ids},
+    attributes: ['id', 'title', 'description', 'artists', 'author', 'genre', 'subscription', 'link', 'artwork'], where: {id: ids},
   }).catch(error => {
     Logger.error(`Error al obtener canciones de la base de datos: ${error.toString()}`);
     throw utils.newError(500, 'Error al obtener las canciones');
@@ -96,6 +97,7 @@ const findSongs = async ids => {
 const findPlaylists = (filters) => {
   return Playlist.findAll({
     where: filters,
+    include: {model: Song, through: {attributes: []}}
   }).catch(error => {
     Logger.error(`Error al obtener playlists de la base de datos: ${error.toString()}`);
     throw utils.newError(500, 'Error al obtener las playlists');

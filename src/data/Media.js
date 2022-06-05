@@ -36,7 +36,7 @@ const Song = database.define('song',
       type: Sequelize.STRING(constants.MAX_STR_LEN),
       allowNull: false,
       unique: false,
-      defaultValue: 'FREE'
+      defaultValue: 'free'
     },
 
     genre: {
@@ -57,6 +57,11 @@ const Song = database.define('song',
           allowNull: false,
           defaultValue: false
       },
+    artwork: {
+      type: Sequelize.STRING(constants.MAX_STR_FIREBASE_LINK),
+      allowNull: true,
+      unique: false,
+    },
   },
   {
     indexes: [
@@ -106,7 +111,7 @@ const Album = database.define('album',
       type: Sequelize.STRING(constants.MAX_STR_LEN),
       allowNull: false,
       unique: false,
-      defaultValue: 'FREE'
+      defaultValue: 'free'
     },
 
     isBlocked: {
@@ -183,6 +188,11 @@ const Playlist = database.define('playlist',
           type: Sequelize.BOOLEAN,
           allowNull: false,
           defaultValue: false
+    },
+    artwork: {
+      type: Sequelize.STRING(constants.MAX_STR_FIREBASE_LINK),
+      allowNull: true,
+      unique: false,
     },
   },
   {
