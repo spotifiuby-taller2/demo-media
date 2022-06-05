@@ -84,6 +84,28 @@ async function runMigrations() {
     allowNull: true,
     unique: false,
   }).catch(e => console.log(e.toString()));
+
+  await queryInterface.changeColumn(Song.tableName,
+    'subscription', {
+      type: Sequelize.STRING(constants.MAX_STR_LEN),
+      allowNull: false,
+      unique: false,
+      defaultValue: 'free'
+    },)
+    .catch(error => {
+      console.log(error.toString());
+    });
+
+  await queryInterface.changeColumn(Album.tableName,
+    'subscription', {
+      type: Sequelize.STRING(constants.MAX_STR_LEN),
+      allowNull: false,
+      unique: false,
+      defaultValue: 'free'
+    },)
+    .catch(error => {
+      console.log(error.toString());
+    });
 }
 
 module.exports = {

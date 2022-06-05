@@ -36,7 +36,7 @@ const Song = database.define('song',
       type: Sequelize.STRING(constants.MAX_STR_LEN),
       allowNull: false,
       unique: false,
-      defaultValue: 'FREE'
+      defaultValue: 'free'
     },
 
     genre: {
@@ -111,7 +111,7 @@ const Album = database.define('album',
       type: Sequelize.STRING(constants.MAX_STR_LEN),
       allowNull: false,
       unique: false,
-      defaultValue: 'FREE'
+      defaultValue: 'free'
     },
 
     isBlocked: {
