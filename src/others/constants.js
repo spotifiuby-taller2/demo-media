@@ -46,7 +46,6 @@ const FAV_ALBUM = "/favalbum";
 const UNFAV_ALBUM = "/unfavalbum";
 const CHECK_FAV_ALBUM = "/checkfavalbum";
 const FAVORITE_ALBUMS = "/favoritealbums";
-const CHECK_URL="/check";
 
 const CONTENT_URL = "/content";
 const ENABLE_CONTENT_URL = "/enablecontent";
