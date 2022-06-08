@@ -1,3 +1,5 @@
+const {MSG_NO_AUTORIZADO} = require("./constants");
+
 const constants = require('../others/constants');
 const fetch = require('node-fetch');
 
@@ -40,7 +42,7 @@ const postToGateway = (body) => {
     const gatewayResponse = await r.json();
 
     if (gatewayResponse.error !== undefined) {
-      return gatewayResponse.error;
+      return gatewayResponse;
     }
 
     return await fetch(body.redirectTo, {

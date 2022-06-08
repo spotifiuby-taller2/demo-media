@@ -1,3 +1,5 @@
+const {MSG_NO_AUTORIZADO} = require("../others/constants");
+
 const utils = require("../others/utils");
 const Logger = require("./Logger");
 const {MAX_LIMIT} = require("../others/constants");

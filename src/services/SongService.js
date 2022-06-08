@@ -135,6 +135,7 @@ async function getSong(req, res) {
   if (response.error !== undefined) {
     Logger.error("No se pudo obtener los artistas de la canción.");
     Logger.error(response.error);
+    return utils.setErrorResponse("No se pudo obtener la cancion", 500, res);
   } else {
     song.artists = response;
   }
