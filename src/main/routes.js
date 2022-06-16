@@ -700,6 +700,37 @@ router.get(`${constants.PLAYLIST_URL}/:id`, async (req, res) => {
 
 /**
  * @swagger
+ * /playlists:
+ *    post:
+ *      tags: [Playlist]
+ *      summary: Change playlist status.
+ *      description: "Get playlist status with id."
+ *      parameters:
+ *         - name: "id"
+ *           in: body
+ *           required: true
+ *           description: "Playlist Id."
+ *           schema:
+ *              type: string
+ *         - name: "isPublic"
+ *           in: body
+ *           required: true
+ *           description: "Playlist status (if is public or not)."
+ *           schema:
+ *              type: boolean
+ *      responses:
+ *          "200":
+ *              description: "returns playlist with the id."
+ *          "500":
+ *              description: "Internal Server Error: Cannot response the request"
+ */
+router.post(`${constants.PLAYLIST_STATUS_URL}`, async (req, res) => {
+  Logger.request('Cambiar estado de la playlist.')
+  await PlaylistService.changePlaylistStatus(req, res);
+})
+
+/**
+ * @swagger
  * /content:
  *    get:
  *      tags: [Content]

@@ -125,10 +125,30 @@ const getPlaylists = async (req, res) => {
   }
 }
 
+const changePlaylistStatus = async (req, res) => {
+  const data = req.body;
+
+  await Playlist.update( {
+        isCollaborative: data.isPublic
+      },
+      {
+        where: {
+          id: data.id
+        } })
+      .catch(error => {
+        return utils.setErrorResponse("No se pudo guardar la cancion", 500, res);
+      } );
+
+  return utils.setBodyResponse({msg:
+            "Estado actualizado"},
+      200,
+      res);
+}
+
 module.exports = {
   getPlaylist,
   getPlaylists,
   newPlaylist,
   findPlaylists,
-  changePlayList
+  changePlayList, changePlaylistStatus
 }

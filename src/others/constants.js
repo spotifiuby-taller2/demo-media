@@ -47,6 +47,8 @@ const UNFAV_ALBUM = "/unfavalbum";
 const CHECK_FAV_ALBUM = "/checkfavalbum";
 const FAVORITE_ALBUMS = "/favoritealbums";
 
+const PLAYLIST_STATUS_URL = "/playliststatus";
+
 const CONTENT_URL = "/content";
 const ENABLE_CONTENT_URL = "/enablecontent";
 const DISABLE_CONTENT_URL = "/disablecontent";
@@ -135,5 +137,5 @@ module.exports = {
   DISABLE_CONTENT_URL,
   FAV_ALBUM,
   UNFAV_ALBUM, CHECK_FAV_ALBUM, FAVORITE_ALBUMS, MAX_LIMIT,
-  CHECK_URL, MSG_NO_AUTORIZADO
+  CHECK_URL, MSG_NO_AUTORIZADO, PLAYLIST_STATUS_URL
 }
