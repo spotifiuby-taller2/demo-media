@@ -41,8 +41,7 @@ const getContent = async (req,
                 blocked: album.isBlocked
             } } );
 
-        playlists = ( await findPlaylists(constants.MAX_LIMIT,
-                                          {} ) ).map(playlist => {
+        playlists = ( await findPlaylists({}) ).map(playlist => {
             return {
                 id: "playlist_" + playlist.id,
                 name: playlist.title,
