@@ -193,7 +193,7 @@ const Playlist = database.define('playlist',
       type: Sequelize.STRING(constants.MAX_STR_FIREBASE_LINK),
       allowNull: true,
       unique: false,
-    },
+    }
   },
   {
     indexes: [

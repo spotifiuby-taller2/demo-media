@@ -26,9 +26,12 @@ const getContent = async (req,
             return {
                 id: "song_" + song.id,
                 name: song.title,
+                description: song.description,
                 genre: song.genre,
-                type: "song",
-                blocked:     song.isBlocked
+                subscription: song.subscription,
+                creationDate: utils.getDateFromCreatedAtAttribute(song.createdAt),
+                type: "canción",
+                blocked: song.isBlocked
             } } );
 
         albums = ( await findAlbums(constants.MAX_LIMIT,
@@ -36,7 +39,10 @@ const getContent = async (req,
             return {
                 id: "album_" + album.id,
                 name: album.title,
+                description: album.description,
                 genre: album.genre,
+                subscription: album.subscription,
+                creationDate: utils.getDateFromCreatedAtAttribute(album.createdAt),
                 type: "album",
                 blocked: album.isBlocked
             } } );
@@ -45,7 +51,10 @@ const getContent = async (req,
             return {
                 id: "playlist_" + playlist.id,
                 name: playlist.title,
+                description: playlist.title,
                 genre: playlist.genre,
+                subscription: playlist.subscription,
+                creationDate: utils.getDateFromCreatedAtAttribute(playlist.createdAt),
                 type: "playlist",
                 blocked: playlist.isBlocked
             } } );
