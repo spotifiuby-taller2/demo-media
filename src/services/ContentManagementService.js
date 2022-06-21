@@ -52,8 +52,6 @@ const getContent = async (req,
                 id: "playlist_" + playlist.id,
                 name: playlist.title,
                 description: playlist.title,
-                genre: playlist.genre,
-                subscription: playlist.subscription,
                 creationDate: utils.getDateFromCreatedAtAttribute(playlist.createdAt),
                 type: "playlist",
                 blocked: playlist.isBlocked
