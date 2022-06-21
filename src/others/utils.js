@@ -20,8 +20,23 @@ const newError = (status, message) => {
 }
 
 function getDate() {
-  return new Date().toISOString()
-    .substr(0, 10);
+  return getFormatedDate( new Date() );
+}
+
+const getFormatedDate = (timestamp) => {
+  return timestamp.toISOString()
+                  .substr(0, 10);
+}
+
+function getDateFromCreatedAtAttribute(timestamp) {
+    const dateParts = getFormatedDate(timestamp).split(" ")[0]
+                                                .split("-");
+
+    // dd/MM/AAAA
+    return dateParts[2] + "/"
+                        + dateParts[1]
+                        + "/"
+                        + dateParts[0];
 }
 
 function areAnyUndefined(list) {
@@ -70,5 +85,6 @@ module.exports = {
   getDate,
   areAnyUndefined,
   newError,
-  postToGateway
+  postToGateway,
+  getDateFromCreatedAtAttribute
 }

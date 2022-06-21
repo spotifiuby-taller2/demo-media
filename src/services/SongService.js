@@ -104,13 +104,25 @@ async function getSongs(req, res) {
 
 async function getSong(req, res) {
   Logger.info("Get song by id");
+
   const id = req.params.id;
+
+  const adminRequest = req.query
+                          .adminRequest !== undefined &&
+                       req.query
+                           .adminRequest === "true";
+
+  const whereCondition = adminRequest ?
+                          {
+                            id: id
+                          }
+                          : {
+                            id: id,
+                            isBlocked: false
+                          }
+
   const song = await Song.findOne({
-    where: {
-      [Op.and]:[
-          {id: id},
-          {isBlocked: false}
-      ] },
+    where: whereCondition,
     attributes: ['id', 'title', 'description', 'artists', 'author', 'subscription', 'genre', 'link', 'artwork']
   } ).catch(error => {
     Logger.error(`No se pudo obtener la cancion de la base de datos: ${error.toString()}`);
