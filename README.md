@@ -1,4 +1,4 @@
-# users
+# media
 
 [![Coverage Status](https://coveralls.io/repos/github/spotifiuby-taller2/demo-media/badge.svg?branch=main&t=2P4ONd)](https://coveralls.io/github/spotifiuby-taller2/demo-media?branch=main)
 
