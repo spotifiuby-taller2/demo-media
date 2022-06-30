@@ -267,7 +267,11 @@ describe('SongService', function () {
         const req = {
             params: {
                     id: 1,
-        }};
+            },
+            query: {
+                adminRequest: false,
+            },
+        };
         const res = mockResponse();
 
         await SongService.getSong(req, res);
@@ -317,7 +321,11 @@ describe('SongService', function () {
         const req = {
             params: {
                     id: 1,
-        }};
+            },
+            query: {
+                adminRequest: false,
+            },
+        };
         const res = mockResponse(500);
 
         await SongService.getSong(req, res);
@@ -363,7 +371,11 @@ describe('SongService', function () {
         const req = {
             params: {
                     id: 1,
-        }};
+            },
+            query: {
+                adminRequest: false,
+            },
+        };
         const res = mockResponse();
 
         await SongService.getSong(req, res);
