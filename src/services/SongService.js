@@ -142,7 +142,7 @@ async function getSong(req, res) {
     redirectTo: constants.USERS_HOST + constants.PARSE_USERS_URL
   }
 
-  const response = await postToGateway(requestBody);
+  const response = await utils.postToGateway(requestBody);
 
   if (response.error !== undefined) {
     Logger.error("No se pudo obtener los artistas de la canción.");
@@ -199,7 +199,7 @@ async function unfavSong(req,
 
   if (response === null || response.error !== undefined) {
     Logger.error(`No se pudo quitar la canción a favoritos: ${response.error}`);
-    return utils.setErrorResponse("No se pudo guardar la cancion", 500, res);
+    return utils.setErrorResponse("No se pudo quitar la canción a favoritos", 500, res);
   }
 
   return utils.setBodyResponse({msg:
@@ -229,7 +229,7 @@ async function getFavoriteSongs(req,
   });
 
   if (response === null || response.error !== undefined) {
-    Logger.error(`No se pudo obtener las canciones favoritas: ${response.error}`);
+    Logger.error(`No se pudo obtener las canciones favoritas: ${response?.error}`);
     return utils.setErrorResponse("No se pudieron traer las canciones.", 500, res);
   }
 
@@ -284,7 +284,7 @@ async function checkFavSong(req,
   });
 
   if (response === null || response.error !== undefined) {
-    Logger.error(`No se pudo obtener las canciones favoritas: ${response.error}`);
+    Logger.error(`No se pudo obtener las canciones favoritas: ${response?.error}`);
     return utils.setErrorResponse("No se pudieron traer las canciones.", 500, res);
   }
 
