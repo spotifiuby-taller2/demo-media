@@ -160,7 +160,7 @@ const favAlbum = async (req, res) => {
     });
 
     if (response === null || response.error !== undefined) {
-      Logger.error(`No se pudo agregar el album a favoritos: ${response.error}`);
+      Logger.error(`No se pudo agregar el album a favoritos: ${response?.error}`);
       return utils.setErrorResponse("No se pudo agregar el album a favoritos", 500, res);
     }
 
@@ -170,8 +170,7 @@ const favAlbum = async (req, res) => {
                                  res);
 }
 
-async function unfavAlbum(req,
-                         res) {
+async function unfavAlbum(req, res) {
   const {userId,
          albumId} = req.body;
 
@@ -188,7 +187,7 @@ async function unfavAlbum(req,
 
   if (response === null || response.error !== undefined) {
     Logger.error(`No se pudo quitar el album de favoritos: ${response.error}`);
-    return utils.setErrorResponse("No se pudo guardar el album", 500, res);
+    return utils.setErrorResponse("No se pudo quitar el album de favoritos", 500, res);
   }
 
   return utils.setBodyResponse({msg:
@@ -197,8 +196,7 @@ async function unfavAlbum(req,
       res);
 }
 
-async function checkFavAlbum(req,
-                            res) {
+async function checkFavAlbum(req, res) {
   const userId = req.query
                     .userId;
 
@@ -217,7 +215,7 @@ async function checkFavAlbum(req,
   });
 
   if (response === null || response.error !== undefined) {
-    Logger.error(`No se pudieron obtener los albumes favoritos: ${response.error}`);
+    Logger.error(`No se pudieron obtener los albumes favoritos: ${response?.error}`);
     return utils.setErrorResponse("No se pudieron obtener los albumes favoritos.", 500, res);
   }
 
@@ -240,17 +238,15 @@ async function checkFavAlbum(req,
 
   const solvedAlbums = await Promise.all(mapedAlbums);
 
-  const songIds = solvedAlbums.map(album => album.id);
+  const albumIds = solvedAlbums.map(album => album.id);
 
   return utils.setBodyResponse( {
-        hasSong: songIds.includes( parseInt(albumId) ) },
+        hasSong: albumIds.includes( parseInt(albumId) ) },
       200,
       res);
 }
 
-
-async function getFavoriteAlbums(req,
-                                res) {
+async function getFavoriteAlbums(req, res) {
   const userId = req.query
                     .userId;
 

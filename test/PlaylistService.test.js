@@ -33,10 +33,13 @@ describe('PlaylistService', function() {
       await PlaylistService.getPlaylist(req, res);
 
       assert(res.status.calledWith(404));
-      assert(res.json.called);
+      assert(res.json.calledWith(
+        {error: `Playlist with id ${req.params.id} does not exist`}
+      ));
       revertRewire();
     });
   });
+
   describe('getPlaylists', function () {
     it('returns a filtered list of playlists', async function () {
       const playlist = {};
@@ -57,6 +60,7 @@ describe('PlaylistService', function() {
       revertRewire();
     })
   });
+
   describe('newPlaylist', function () {
     it('creates a new playlist', async function() {
       const songIds = [1, 2, 3];
@@ -96,5 +100,53 @@ describe('PlaylistService', function() {
       assert(playlistAddSongsFake.calledWith(songs));
       revertRewire();
     })
-  })
+  });
+
+  describe('changePlaylistStatus', function () {
+    it('change playlist state from private to public', async function() {
+
+      const updatePlaylistMock = sinon.fake.returns(Promise.resolve(1));
+      const revertRewire = PlaylistService.__set__({
+        Playlist: {update: updatePlaylistMock},
+      });
+      const req = {
+        body: {
+          id: 1,
+          isPublic: true,
+      }};
+      const res = mockResponse();
+
+      await PlaylistService.changePlaylistStatus(req, res);
+
+      assert(res.status.calledWith(200));
+      assert(res.json.calledWith(
+        {msg: "Estado actualizado"}
+      ));
+      assert(updatePlaylistMock.calledWithMatch(
+        {isCollaborative: req.body.isPublic},
+        {where: {id: req.body.id}}));
+      assert(updatePlaylistMock.calledOnce);
+      revertRewire();
+    })
+  });
+
+  describe('changePlayList', function () {
+    it('changePlayList ok', async function() {
+
+      const updatePlaylistMock = sinon.fake.returns(Promise.resolve(1));
+      const revertRewire = PlaylistService.__set__({
+        Playlist: {update: updatePlaylistMock},
+      });
+      const playlistId = 1;
+      const isBlocked = true;
+
+      await PlaylistService.changePlayList(playlistId, isBlocked);
+
+      assert(updatePlaylistMock.calledWithMatch(
+        {isBlocked: isBlocked},
+        {where: {id: playlistId}}));
+      assert(updatePlaylistMock.calledOnce);
+      revertRewire();
+    })
+  });
 });
