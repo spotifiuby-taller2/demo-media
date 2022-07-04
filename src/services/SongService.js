@@ -78,10 +78,6 @@ async function getSongs(req, res) {
 
   where.isBlocked = false;
 
-  if (req.query.songsubscription !== undefined && req.query.songsubscription === "free") {
-    where.subscription = "free";
-  }
-
   if (title !== undefined) where.title = title
   if (artist !== undefined) where.artists = {[Op.contains]: [artist]}
   if (genre !== undefined) where.genre = genre
